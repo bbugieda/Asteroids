@@ -1,0 +1,17 @@
+.ball {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  animation: rotation 0s linear;
+  left: 30px;
+  top: 40px;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(2deg);
+  }
+}
