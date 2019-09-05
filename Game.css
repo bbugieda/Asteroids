@@ -2,7 +2,7 @@
   width: 100px;
   height: 100px;
   position: absolute;
-  animation: rotation 0s linear;
+  transform: rotate(0deg);
   left: 30px;
   top: 40px;
 }
@@ -14,4 +14,15 @@
   to {
     transform: rotate(2deg);
   }
+}
+
+body{
+  background-image: url('https://media2.giphy.com/media/RHIKETUlUINYvV7CAO/giphy.gif');
+  background-size: cover;
+  
+  
+  
+  height: 100vh;
+  padding:0;
+  margin:0;
 }

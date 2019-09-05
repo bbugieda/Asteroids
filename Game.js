@@ -1,18 +1,22 @@
 var change = {
     37: {
-      left: "-=1"
+      left: "-=1",
+      transform: "rotate(270deg)"
     },
   
     38: {
-      top: "-=1"
+      top: "-=1",
+      transform: "rotate(0deg)"
     },
   
     39: {
-      left: "+=1"
+      left: "+=1",
+      transform: "rotate(90deg)"
     },
   
     40: {
-      top: "+=1"
+      top: "+=1",
+      transform: "rotate(180deg)"
     },
   }
   $(document).one("keydown", keyDown)
