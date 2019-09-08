@@ -2,10 +2,11 @@
   width: 100px;
   height: 100px;
   position: absolute;
-  transform: rotate(0deg);
+  transform: none;
   left: 30px;
   top: 40px;
 }
+
 
 @keyframes rotation {
   from {
@@ -17,8 +18,8 @@
 }
 
 body{
-  background-image: url('https://media2.giphy.com/media/RHIKETUlUINYvV7CAO/giphy.gif');
-  background-size: cover;
+  /* background-image: url('https://media2.giphy.com/media/RHIKETUlUINYvV7CAO/giphy.gif');
+  background-size: cover; */
   
   
   
