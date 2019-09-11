@@ -34,7 +34,10 @@ var change = {
     }
     //  console.log("down", key, movement[key])
     function keepGoing() {
-      $(".ball").css(animation)
+      for (i = 0; i < 1; i++) {
+        $(".ball").css(animation)
+      }
+      
     }
   
   }
