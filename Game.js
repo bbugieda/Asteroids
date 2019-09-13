@@ -51,13 +51,18 @@ var change = {
   function Asteroid() {
     this.x = 0;
     this.y = 0;
-    this.velX = random(-1, 1);
-    this.velY = random(-1, 1);
+    this.velX = (Math.random() * (1-(-1)+1)+1);
+    this.velY = (Math.random() * (1-(-1)+1)+1);
     this.radius = 0;
-    
+    this.create = function(x, y, radius) {
+      this.x = x;
+      this.y = y;
+      this.radius = (Math.random() * (50-25+1) + 1);
+    };
   }
 
   function addAsteroid(x, y, radius) {
     var asteroid = new asteroid();
-
+    asteroid.create(x, y, radius);
+    
   }
