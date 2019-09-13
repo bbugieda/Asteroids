@@ -47,3 +47,17 @@ var change = {
     movement[key] = clearInterval(movement[key])
       //  console.log("up", key, movement[key])
   }  
+
+  function Asteroid() {
+    this.x = 0;
+    this.y = 0;
+    this.velX = random(-1, 1);
+    this.velY = random(-1, 1);
+    this.radius = 0;
+    
+  }
+
+  function addAsteroid(x, y, radius) {
+    var asteroid = new asteroid();
+
+  }

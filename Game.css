@@ -7,6 +7,15 @@
   top: 40px;
 }
 
+.asteroid {
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  background-color:#555;
+  border-radius: 50%;
+
+}
+
 
 @keyframes rotation {
   from {
