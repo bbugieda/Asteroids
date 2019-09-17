@@ -1,29 +1,41 @@
-.ball {
+.spaceShip {
   width: 100px;
   height: 100px;
   position: absolute;
   transform: none;
   left: 30px;
   top: 40px;
+  display: none;
 }
 
-
-@keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(2deg);
-  }
+.bullet {
+  width: 16px;
+  height: 40px;
+  transform: none;
+  /* background-image: url("assets/bullet.png"); */
+  position: absolute;
 }
+
+#splashscreen {
+  background-image: url('assets/cover.png');
+  height: 100vh;
+  margin: 0px;
+}
+
+#StartButton {
+  width: 10%;
+  left: 1300px;
+  bottom: 200px;
+  position: absolute;
+}
+
 
 body{
   background-image: url('https://media2.giphy.com/media/RHIKETUlUINYvV7CAO/giphy.gif');
   background-size: cover;
-  
-  
-  
-  height: 100vh;
+  height: 100vh; 
+  width: 100vw;
   padding:0;
   margin:0;
+  display: hidden;
 }
