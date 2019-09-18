@@ -48,6 +48,9 @@ var change = {
       //  console.log("up", key, movement[key])
   }  
 
+  var v = $('<div class="asteroid"></div>').appendto('#screen')
+  
+
   function Asteroid() {
     this.x = 0;
     this.y = 0;
