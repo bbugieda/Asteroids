@@ -121,7 +121,7 @@ $(document).ready(function(e){
   var locked = false;
  
   function gameLoop() {
-    
+    createRandomAsteroid();
     areaCheck();
     angleCheck(angle);
     if (keys[39]) {     //right
