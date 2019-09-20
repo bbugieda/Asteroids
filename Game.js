@@ -1,3 +1,21 @@
+class Game {
+  constructor(div) {
+      this.fps = 30;
+
+  }
+
+  start() {
+      this.asteroidField = new AsteroidField();
+      //this.ship = new Ship(this.width / 2, this.height / 2);
+
+      //this.intervalId = setInterval(this._loop.bind(this), 1000 / this.fps);
+  }
+
+}
+
+
+
+
 var change = {
     37: {
       left: "-=1",
