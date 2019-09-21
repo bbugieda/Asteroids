@@ -16,8 +16,8 @@ $(document).ready(function(e){
 
   var $d = $(".spaceShip");
   var angle = 0
-  $(window).height();
-  $(window).width();
+  var windowHeight = $(window).height();
+  var windowWidth = $(window).width();
   var checkTime = 0;
   var bulletCount = 0;
   var currentTime = new Date()
@@ -25,6 +25,40 @@ $(document).ready(function(e){
   function easing(val){
     
   }
+
+  class Asteroid {
+    constructor(x, y, heading, velocity, size) {
+        this.x = x;
+        this.y = y;
+        this.heading = heading;
+        this.velocity = velocity;
+        this.size = size;
+    }
+}
+
+class AsteroidField {
+    constructor() {
+        this.asteroidSizes = [8, 16, 32];
+        this.nAsteroids = 10;
+        this.asteroids = [];
+        this.asteroidsPerSplit = 3;
+        this.minVelocity = 5;
+        this.maxVelocity = 30;
+        
+        for (let i = 0; i < this.nAsteroids; i++) {
+            this.asteroids.push(this.createRandomAsteroid());
+        }
+    }
+}
+
+function createRandomAsteroid() {
+  let xPos = Math.random() * windowWidth;
+  let yPos = Math.random() * windowHeight;
+  let size = this.asteroidSizes[Math.floor(Math.random() * this.asteroidSizes.size())];
+  let velocity = this.minVelocity + (Math.random() * (this.maxVelocity - this.minVelocity));
+  let heading = Math.random() * 360;
+  return new Asteroid(xPos, yPos, heading, velocity, size);
+}
 
   // EasingFunctions = {
   //   // no easing, no acceleration
@@ -121,7 +155,7 @@ $(document).ready(function(e){
   var locked = false;
  
   function gameLoop() {
-    //createRandomAsteroid();
+    createRandomAsteroid();
     areaCheck();
     angleCheck(angle);
     if (keys[39]) {     //right
