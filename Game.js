@@ -47,13 +47,12 @@ $(document).ready(function () {
 	let velocityY = 0;
 
 	let bulletCount = 0;
-
+	const screeny = $(window).height();
+	const screenx = $(window).width();
 	/**
 	 * check for ship going out of screen 
 	 */
 	function areaCheck() {
-		const screeny = $(window).height();
-		const screenx = $(window).width();
 		let xloc = parseFloat($ship.css("left"));
 		let yloc = parseFloat($ship.css("top"));
 
@@ -103,7 +102,7 @@ $(document).ready(function () {
 	function fireBullet(x, y, ang) {
 		bulletCount++;
 		let bull = $("#bulletList").append(
-					$("<li " + "id=" + bulletCount + ">").append(
+					$("<li " + "id=" + bulletCount + "-" + ang + ">").append(
 					$("<img src='assets/bullet.png'>")
 						.addClass("bullet")
 						.css({left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)"})
@@ -134,7 +133,21 @@ $(document).ready(function () {
 	 * update positions of fired bullets
 	 */
 	function updateBullets() {
-		
+		const sy = $(window).height();
+		const sx = $(window).width();
+		$("li").each(function (){
+			let bul = $(this);
+			const bul_angle = bul.attr("id");
+			const angle = bul_angle.split("-")[1];
+			bul_x += 7 * Math.cos(((angle - 90) * Math.PI) / 180);
+			bul_y += 7 * Math.sin(((angle - 90) * Math.PI) / 180);
+			bul.children().css("top", bul_x + "px");
+			bul.children().css("left", bul_y + "px");
+
+			if (bul_x > sx || bul_x < 0 || bul_y > sy || bul_y < 0) {
+				bul.remove();
+			}
+		});
 	}
 
 	function gameLoop() {
