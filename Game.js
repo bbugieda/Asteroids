@@ -8,14 +8,23 @@ const direction = {
 	SPACE: 32,
 }
 
-$(document).ready(function() {
+/**
+ * Enums for game settings
+ */
+const game = {
+	MAX_SPEED: 7,
+	ROTATE_ANGLE: 5,
+	DECELERATION: 0.98,
+}
+
+$(document).ready(function () {
 	$("#StartButton").click(function () {
 		$("#splashscreen").fadeOut(1000);
 		$(".spaceShip").show();
 		$("body").show();
 	});
 
-	let keys = {};
+	let keys = {}; //dictionary to keep track of key presses
 	$(document)
 		.keydown(function (event) {
 			if (event.which == direction.RIGHT || event.which == direction.LEFT || event.which == direction.SPACE || event.which == direction.UP) {
@@ -39,6 +48,9 @@ $(document).ready(function() {
 	$(window).width();
 	let bulletCount = 0;
 
+	/**
+	 * check for ship going out of screen 
+	 */
 	function areaCheck() {
 		let screeny = $(window).height();
 		let screenx = $(window).width();
@@ -92,20 +104,24 @@ $(document).ready(function() {
 
 	let locked = false;
 
+	/**
+	 * update position of space ship based on 
+	 * acceleration and velocity
+	 */
 	function updatePosition() {
 		let xloc = parseFloat($ship.css("left"));
 		let yloc = parseFloat($ship.css("top"));
-		
+
 		// maximum x velocity
-		if (velocityX >= 7) {
-			velocityX = 7;
+		if (velocityX >= game.MAX_SPEED) {
+			velocityX = game.MAX_SPEED;
 		} else {
 			velocityX += accelerationX;
 		}
 
 		// maximum y velocity
-		if (velocityY >= 7) {
-			velocityY = 7;
+		if (velocityY >= game.MAX_SPEED) {
+			velocityY = game.MAX_SPEED;
 		} else {
 			velocityY += accelerationY;
 		}
@@ -119,17 +135,14 @@ $(document).ready(function() {
 	function gameLoop() {
 		areaCheck();
 		if (keys[direction.RIGHT]) {
-			//right
-			angle = (angle + 5) % 360;
+			angle = (angle + game.ROTATE_ANGLE) % 360;
 			$ship.css("transform", "rotate(" + angle + "deg)");
 		}
 		if (keys[direction.LEFT]) {
-			//left
-			angle = (angle - 5) % 360;
+			angle = (angle - game.ROTATE_ANGLE) % 360;
 			$ship.css("transform", "rotate(" + angle + "deg)");
 		}
 		if (keys[direction.SPACE]) {
-			//space
 			if (!locked) {
 				locked = true;
 
@@ -149,14 +162,13 @@ $(document).ready(function() {
 			}
 		}
 		if (keys[direction.UP]) {
-			//up
-			accelerationX = 0.03 * Math.cos(4.8+(angle * Math.PI) / 180);
-			accelerationY = 0.03 * Math.sin(4.8+(angle * Math.PI) / 180);
+			accelerationX = 0.03 * Math.cos(4.8 + (angle * Math.PI) / 180);
+			accelerationY = 0.03 * Math.sin(4.8 + (angle * Math.PI) / 180);
 		}
 		if (!keys[direction.UP]) {
 			// deceleration
-			velocityX *= 0.98;
-			velocityY *= 0.98;
+			velocityX *= game.DECELERATION;
+			velocityY *= game.DECELERATION;
 		}
 		updatePosition();
 
