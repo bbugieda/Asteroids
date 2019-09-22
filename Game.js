@@ -15,6 +15,8 @@ const game = {
 	MAX_SPEED: 7,
 	ROTATE_ANGLE: 5,
 	DECELERATION: 0.98,
+	SMOOTH_ACCELERATION_CONST: 0.03,
+	SHIP_RADIUS: 50,
 }
 
 $(document).ready(function () {
@@ -112,19 +114,9 @@ $(document).ready(function () {
 		let xloc = parseFloat($ship.css("left"));
 		let yloc = parseFloat($ship.css("top"));
 
-		// maximum x velocity
-		if (velocityX >= game.MAX_SPEED) {
-			velocityX = game.MAX_SPEED;
-		} else {
-			velocityX += accelerationX;
-		}
-
-		// maximum y velocity
-		if (velocityY >= game.MAX_SPEED) {
-			velocityY = game.MAX_SPEED;
-		} else {
-			velocityY += accelerationY;
-		}
+		// enforce speed limit
+		velocityX = (velocityX >= game.MAX_SPEED) ? game.MAX_SPEED : velocityX + accelerationX;
+		velocityY = (velocityY >= game.MAX_SPEED) ? game.MAX_SPEED : velocityY + accelerationY;
 
 		xloc += velocityX;
 		yloc += velocityY;
@@ -162,8 +154,8 @@ $(document).ready(function () {
 			}
 		}
 		if (keys[direction.UP]) {
-			accelerationX = 0.03 * Math.cos(4.8 + (angle * Math.PI) / 180);
-			accelerationY = 0.03 * Math.sin(4.8 + (angle * Math.PI) / 180);
+			accelerationX = game.SMOOTH_ACCELERATION_CONST * Math.cos(4.8 + (angle * Math.PI) / 180);
+			accelerationY = game.SMOOTH_ACCELERATION_CONST * Math.sin(4.8 + (angle * Math.PI) / 180);
 		}
 		if (!keys[direction.UP]) {
 			// deceleration
