@@ -139,10 +139,12 @@ $(document).ready(function () {
 			let bul = $(this);
 			const bul_angle = bul.attr("id");
 			const angle = bul_angle.split("-")[1];
-			bul_x += 7 * Math.cos(((angle - 90) * Math.PI) / 180);
-			bul_y += 7 * Math.sin(((angle - 90) * Math.PI) / 180);
-			bul.children().css("top", bul_x + "px");
-			bul.children().css("left", bul_y + "px");
+			let bul_x = parseFloat(bul.children().css("left"));
+			let bul_y = parseFloat(bul.children().css("top"));
+			bul_x += 10 * Math.cos(((angle - 90) * Math.PI) / 180);
+			bul_y += 10 * Math.sin(((angle - 90) * Math.PI) / 180);
+			bul.children().css("top", bul_y + "px");
+			bul.children().css("left", bul_x + "px");
 
 			if (bul_x > sx || bul_x < 0 || bul_y > sy || bul_y < 0) {
 				bul.remove();
