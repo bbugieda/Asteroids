@@ -39,69 +39,75 @@ $(document).ready(function () {
 			}
 		});
 
-	let $ship = $(".spaceShip");
+	const $ship = $(".spaceShip");
 	let angle = 0;
 	let accelerationX = 0;
 	let accelerationY = 0;
 	let velocityX = 0;
 	let velocityY = 0;
 
-	$(window).height();
-	$(window).width();
 	let bulletCount = 0;
 
 	/**
 	 * check for ship going out of screen 
 	 */
 	function areaCheck() {
-		let screeny = $(window).height();
-		let screenx = $(window).width();
+		const screeny = $(window).height();
+		const screenx = $(window).width();
 		let xloc = parseFloat($ship.css("left"));
 		let yloc = parseFloat($ship.css("top"));
 
-		if (xloc > screenx) {
-			$ship.css("left", 0 + "px");
+		if (xloc > screenx + game.SHIP_RADIUS) {
+			$ship.css("left", -game.SHIP_RADIUS + "px");
+		} else if (xloc < -game.SHIP_RADIUS) {
+			$ship.css("left", screenx + game.SHIP_RADIUS + "px");
 		}
-		if (yloc > screeny) {
-			$ship.css("top", 0 + "px");
-		}
-		if (xloc < 0) {
-			$ship.css("left", screenx + "px");
-		}
-		if (yloc < 0) {
-			$ship.css("top", screeny + "px");
+		if (yloc > screeny + game.SHIP_RADIUS) {
+			$ship.css("top", -game.SHIP_RADIUS + "px");
+		} else if (yloc < -game.SHIP_RADIUS) {
+			$ship.css("top", screeny + game.SHIP_RADIUS + "px");
 		}
 	}
+
+	// function fireBullet(x, y, ang) {
+	// 	bulletCount++;
+	// 	let t = $("body").append(
+	// 		$("<img src='assets/bullet.png'>")
+	// 			.addClass("bullet")
+	// 			.css({ left: x + 60, top: y + 20 })
+	// 	);
+	// 	t.attr("id", bulletCount);
+	// 	let bull = new Bullet(x, y, ang);
+	// 	return bull;
+	// }
+
+	// function Bullet(x, y, ang) {
+	// 	// `this` is the instance which is currently being created
+
+	// 	this.xloc = x;
+	// 	this.yloc = y;
+	// 	this.angle = ang;
+	// 	return this;
+	// 	// No need to return, but you can use `return this;` if you want
+	// }
+
+	// function update(bull) {
+	// 	$("[class^='bullet']").each(function () {
+	// 		bull.xval += 7 * Math.cos(((bull.angle - 90) * Math.PI) / 180);
+	// 		bull.yval += 7 * Math.sin(((bull.angle - 90) * Math.PI) / 180);
+	// 		$(this).css("left", bull.xval + "px");
+	// 		$(this).css("top", bull.yval + "px");
+	// 	});
+	// }
 
 	function fireBullet(x, y, ang) {
 		bulletCount++;
-		let t = $("body").append(
-			$("<img src='assets/bullet.png'>")
-				.addClass("bullet")
-				.css({ left: x + 60, top: y + 20 })
-		);
-		t.attr("id", bulletCount);
-		let bull = new Bullet(x, y, ang);
-		return bull;
-	}
-
-	function Bullet(x, y, ang) {
-		// `this` is the instance which is currently being created
-
-		this.xloc = x;
-		this.yloc = y;
-		this.angle = ang;
-		return this;
-		// No need to return, but you can use `return this;` if you want
-	}
-
-	function update(bull) {
-		$("[class^='bullet']").each(function () {
-			bull.xval += 7 * Math.cos(((bull.angle - 90) * Math.PI) / 180);
-			bull.yval += 7 * Math.sin(((bull.angle - 90) * Math.PI) / 180);
-			$(this).css("left", bull.xval + "px");
-			$(this).css("top", bull.yval + "px");
-		});
+		let bull = $("#bulletList").append(
+					$("<li " + "id=" + bulletCount + ">").append(
+					$("<img src='assets/bullet.png'>")
+						.addClass("bullet")
+						.css({left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)"})
+					));
 	}
 
 	let locked = false;
@@ -124,6 +130,13 @@ $(document).ready(function () {
 		$ship.css("left", xloc + "px");
 	}
 
+	/**
+	 * update positions of fired bullets
+	 */
+	function updateBullets() {
+		
+	}
+
 	function gameLoop() {
 		areaCheck();
 		if (keys[direction.RIGHT]) {
@@ -135,19 +148,14 @@ $(document).ready(function () {
 			$ship.css("transform", "rotate(" + angle + "deg)");
 		}
 		if (keys[direction.SPACE]) {
+			console.log(locked);
 			if (!locked) {
 				locked = true;
 
 				let xloc = parseFloat($ship.css("left"));
 				let yloc = parseFloat($ship.css("top"));
+				fireBullet(xloc, yloc, angle);
 
-				let bull = fireBullet(xloc, yloc, angle);
-				update(bull);
-
-				// let i = setInterval(update(bull), 50);
-				// setTimeout(function () {
-				// 	clearInterval(i);
-				// }, 5000);
 				setTimeout(function () {
 					locked = false;
 				}, 250);
@@ -163,11 +171,10 @@ $(document).ready(function () {
 			velocityY *= game.DECELERATION;
 		}
 		updatePosition();
-
+		updateBullets();
 		requestAnimationFrame(gameLoop);
 	}
 
 	gameLoop();
-
 	$(document).focus();
 });
