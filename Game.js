@@ -166,7 +166,8 @@ $(document).ready(function () {
 			console.log(locked);
 			if (!locked) {
 				locked = true;
-
+				var snd = new Audio("assets/Blast.mp3");
+				snd.play();
 				let xloc = parseFloat($ship.css("left"));
 				let yloc = parseFloat($ship.css("top"));
 				fireBullet(xloc, yloc, angle);
