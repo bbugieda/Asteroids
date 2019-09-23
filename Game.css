@@ -8,10 +8,6 @@
   display: none;
 }
 
-.asteroid {
-  background-color: aqua;
-}
-
 .bullet {
   width: 16px;
   height: 40px;

@@ -15,50 +15,139 @@ $(document).ready(function(e){
   });
 
   var $d = $(".spaceShip");
+
   var angle = 0
   var windowHeight = $(window).height();
   var windowWidth = $(window).width();
   var checkTime = 0;
   var bulletCount = 0;
-  var currentTime = new Date()
+  var currentTime = new Date();
+  var asteroids = [];
 
   function easing(val){
     
   }
 
-  class Asteroid {
-    constructor(x, y, heading, velocity, size) {
-        this.x = x;
-        this.y = y;
-        this.heading = heading;
-        this.velocity = velocity;
-        this.size = size;
-    }
+
+
+  function setup(){
+   // createCanvas(windowWidth, windowHeight);
+   // makeStars();
+    makeAsteroids(7);  
+   //shipsAGoGo();
+  textSize(32);
 }
 
-class AsteroidField {
-    constructor() {
-        this.asteroidSizes = [8, 16, 32];
-        this.nAsteroids = 10;
-        this.asteroids = [];
-        this.asteroidsPerSplit = 3;
-        this.minVelocity = 5;
-        this.maxVelocity = 30;
-        
-        for (let i = 0; i < this.nAsteroids; i++) {
-            this.asteroids.push(this.createRandomAsteroid());
-        }
-    }
+function draw(){
+  //checkInput();
+  //makeStars();
+  updateAsteroids();
+  //updateShip();
+  //starWars();
+  //printScore();
 }
 
-function createRandomAsteroid() {
-  let xPos = Math.random() * windowWidth;
-  let yPos = Math.random() * windowHeight;
-  let size = this.asteroidSizes[Math.floor(Math.random() * this.asteroidSizes.size())];
-  let velocity = this.minVelocity + (Math.random() * (this.maxVelocity - this.minVelocity));
-  let heading = Math.random() * 360;
-  return new Asteroid(xPos, yPos, heading, velocity, size);
+function updateAsteroids(){
+    
+  var hit = false;
+  
+  for (var a = asteroids.length-1; a >= 0; a--){     
+    asteroids[a].spaceGlide();
+      screenWrap(asteroids[a]);
+      asteroids[a].render();
+      
+      if (asteroids[a].radius > 4){
+      hit = collision(ship, asteroids[a]);
+      if (hit===true){
+        score--;
+        asteroidSpawn(asteroids[a], a); 
+      }
+      }
+      
+      // for (var j = lasers.length-1; j >= 0; j--){
+      //     if (asteroids[a].radius > 4){
+      //     hit = collision(lasers[j], asteroids[a]);
+      //     if (hit===true){
+      //       score++;
+              
+      //         // Create new asteroid belt if
+      //         // there are less than 3 asteroids :)
+      //         if (asteroids.length < 3){
+      //         // Number of new asteroids will
+      //             // reflect player skill --
+      //             // i.e. their score :)
+      //           let beltPopulation = Math.round(Math.abs(score)/2); makeAsteroids(beltPopulation);
+      //         }
+            
+      //         asteroidSpawn(asteroids[a], a); 
+      //     lasers.splice(j,1);               
+      //     }
+      //     }
+      // }
+      
+    // *** New game behaviour.
+    // If asteroid too small, then remove it from the array. Then, spawn 2 new larger asteroids.
+    if (asteroids[a].dia < 10){
+        asteroids.splice(a,1);
+    }
+  }
 }
+
+
+function asteroidSpawn(_ast, _i){
+  var babyRadi = _ast.radius * 0.25;
+  var newPos = _ast.pos;
+  asteroids.splice(_i, 1);
+  
+  for (var i = 1; i < 5; i++){  
+    asteroids.push(new Ast(babyRadi, newPos));
+  }
+}
+
+function makeAsteroids(_num){
+  for (var i = 0; i < _num; i++){
+    asteroids.push(new Ast());
+  }
+}
+
+function Ast(_rad, _pos){
+  if (_pos == null){
+      //***
+  this.pos = createVector(Math.random()* width, Math.random()*100);
+  }
+  else {
+      // ***
+    this.pos = createVector(_pos.x, _pos.y);
+  }
+  
+this.vel = createVector(Math.random()*10-5, Math.random()*10-5);
+
+  if (_rad == null){
+  this.radius = Math.random()*90 + 10;
+  }
+  else {this.radius = _rad;}
+  
+  this.dia = this.radius * 2;
+  
+}
+
+Ast.prototype.render = function(){
+  
+  fill(51);
+  strokeWeight(3);
+  stroke(255);
+  
+  ellipse(this.pos.x, this.pos.y, this.dia, this.dia);
+  
+}
+
+Ast.prototype.spaceGlide = function(){
+  
+  this.pos.add(this.vel);
+  
+}
+
+
 
   // EasingFunctions = {
   //   // no easing, no acceleration
@@ -155,9 +244,11 @@ function createRandomAsteroid() {
   var locked = false;
  
   function gameLoop() {
-    createRandomAsteroid();
+   // createRandomAsteroid();
     areaCheck();
     angleCheck(angle);
+    makeAsteroids(10);
+    updateAsteroids();
     if (keys[39]) {     //right
         angle+=5
         $d.css("transform", "rotate("+angle+"deg)")
