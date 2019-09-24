@@ -142,6 +142,9 @@ $(document).ready(function () {
 			bul.children().css("top", bul_y + "px");
 			bul.children().css("left", bul_x + "px");
  
+			if (bul_x > screenx || bul_x < 0 || bul_y > screeny || bul_y < 0) {
+				bul.remove();
+			}
 		});
   }
 
