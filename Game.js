@@ -114,8 +114,8 @@ $(document).ready(function () {
 	 * update positions of fired bullets
 	 */
 	function updateBullets() {
-		const sy = $(window).height();
-		const sx = $(window).width();
+		// const sy = $(window).height();
+		// const sx = $(window).width();
 		$("li").each(function () {
 			let bul = $(this);
 			const bul_angle = bul.attr("id");
@@ -127,7 +127,7 @@ $(document).ready(function () {
 			bul.children().css("top", bul_y + "px");
 			bul.children().css("left", bul_x + "px");
 
-			if (bul_x > sx || bul_x < 0 || bul_y > sy || bul_y < 0) {
+			if (bul_x > screenx || bul_x < 0 || bul_y > screeny || bul_y < 0) {
 				bul.remove();
 			}
 		});

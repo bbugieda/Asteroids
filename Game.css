@@ -12,7 +12,6 @@
 	width: 16px;
 	height: 40px;
 	transform: none;
-	/* background-image: url("assets/bullet.png"); */
 	position: absolute;
 }
 
@@ -42,5 +41,6 @@ body{
 	height: 100%;
 	padding:0;
 	margin:0;
-	display: hidden;
+	overflow: unset;
+
 }
