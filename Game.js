@@ -16,7 +16,8 @@ const game = {
 	ROTATE_ANGLE: 5,
 	DECELERATION: 0.98,
 	SMOOTH_ACCELERATION_CONST: 0.03,
-	SHIP_RADIUS: 20,
+  SHIP_RADIUS: 20,
+  ASTEROID_RADIUS: 20,
 }
 
 $(document).ready(function () {
@@ -39,7 +40,9 @@ $(document).ready(function () {
 			}
 		});
 
-	const $ship = $(".spaceShip");
+  const $ship = $(".spaceShip");
+  const $asteroid = $(".asteroid");
+
 	let angle = 0;
 	let accelerationX = 0;
 	let accelerationY = 0;
@@ -50,17 +53,26 @@ $(document).ready(function () {
 	const screeny = $(window).height();
   const screenx = $(window).width();
   
+  let maxAsteroidCount = 10;
   let asteroidCount = 0;
   let asteroidXLoc = 0;
   let asteroidYLoc = 0;
   let asteroidAngle = 0;
+
+  
+  function unloadScrollBars() {
+    document.documentElement.style.overflow = 'hidden';  // firefox, chrome
+    document.body.scroll = "no"; // ie only
+}
+
+
 	/**
 	 * check for ship going out of screen 
 	 */
 	function areaCheck() {
 		let xloc = parseFloat($ship.css("left"));
-		let yloc = parseFloat($ship.css("top"));
-
+    let yloc = parseFloat($ship.css("top"));
+    
 		if (xloc > screenx + game.SHIP_RADIUS) {
 			$ship.css("left", -game.SHIP_RADIUS + "px");
 		} else if (xloc < -game.SHIP_RADIUS) {
@@ -70,8 +82,25 @@ $(document).ready(function () {
 			$ship.css("top", -game.SHIP_RADIUS + "px");
 		} else if (yloc < -game.SHIP_RADIUS) {
 			$ship.css("top", screeny + game.SHIP_RADIUS + "px");
+    }
+    //
+  }
+  
+  function asteroidAreaCheck(){
+    let asteroidXLoc = parseFloat($asteroid.css("left"));
+    let asteroidYLoc = parseFloat($asteroid.css("top"));
+
+    if (asteroidXLoc > screenx + game.ASTEROID_RADIUS) {
+			$asteroid.css("left", -game.ASTEROID_RADIUS + "px");
+		} else if (asteroidXLoc < -game.ASTEROID_RADIUS) {
+			$asteroid.css("left", screenx + game.ASTEROID_RADIUS + "px");
 		}
-	}
+		if (asteroidYLoc > screeny + game.ASTEROID_RADIUS) {
+			$asteroid.css("top", -game.ASTEROID_RADIUS + "px");
+		} else if (asteroidYLoc < -game.ASTEROID_RADIUS) {
+			$asteroid.css("top", screeny + game.ASTEROID_RADIUS + "px");
+		}
+  }
 
 	/**
 	 * adjust angle accordingly
@@ -94,16 +123,39 @@ $(document).ready(function () {
 					.css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })
 			));
   }
+
+
+  /*
+  function createAsteroid(x, y, ang) {
+		let asteroid = $("#asteroidList").append(
+			$("<li " + "id=" + "-" + ang + ">").append(
+				$("<img src='assets/asteroid.png'>")
+					.addClass("asteroid")
+					.css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })
+			));
+  }
+  */
+
+    function createAsteroid(x, y, ang) {
+    asteroidCount++;
+		let asteroid = $("#asteroidList").append(
+			$("<li " + "id=" + asteroidCount + "-" + ang + ">").append(
+				$("<img src='assets/asteroid.png'>")
+					.addClass("asteroid")
+					.css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })
+			));
+  }
   
+  /*
   function moveAsteroid(x,y, ang){
     asteroidCount++;
     let asteroid = $('#asteroidList').append(
       $("<li " + "id=" + bulletCount + "-" + ang + ">").append(
-        $("<img src = 'assets/asteroid.png'>")
+        $("<img src='assets/asteroid.png'>")
         .addClass("asteroid")
         .css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })
       ));
-  }
+  }*/
 
 	let locked = false;
 
@@ -120,7 +172,7 @@ $(document).ready(function () {
 		velocityY = (velocityY >= game.MAX_SPEED) ? game.MAX_SPEED : velocityY + accelerationY;
 
 		xloc += velocityX;
-		yloc += velocityY;
+		yloc += velocityY; 
 		$ship.css("top", yloc + "px");
 		$ship.css("left", xloc + "px");
 	}
@@ -131,7 +183,7 @@ $(document).ready(function () {
 	function updateBullets() {
 		// const sy = $(window).height();
 		// const sx = $(window).width();
-		$("li").each(function () {
+		$("li").each(function(){
 			let bul = $(this);
 			const bul_angle = bul.attr("id");
 			const angle = bul_angle.split("-")[1];
@@ -148,20 +200,15 @@ $(document).ready(function () {
 		});
   }
 
-  function unloadScrollBars() {
-    document.documentElement.style.overflow = 'hidden';  // firefox, chrome
-    document.body.scroll = "no"; // ie only
-}
-  
   function updateAsteroids(){
-    $("li").each(function (){
+    $("li").each(function(){
       let asteroid = $(this);
-      const asteroid_angle = angle.attr("id");
+      const asteroid_angle = asteroid.attr("id");
       const angle = asteroid_angle.split("-")[1];
       let asteroid_x = parseFloat(asteroid.children().css("left"));
 			let asteroid_y = parseFloat(asteroid.children().css("top"));
-			asteroid_x += 10 * Math.cos(((angle - 90) * Math.PI) / 180);
-			asteroid_y += 10 * Math.sin(((angle - 90) * Math.PI) / 180);
+			asteroid_x += 3 * Math.cos(((angle - 90) * Math.PI) / 180);
+			asteroid_y += 3 * Math.sin(((angle - 90) * Math.PI) / 180);
 			asteroid.children().css("top", asteroid_y + "px");
       asteroid.children().css("left", asteroid_x + "px");
       
@@ -171,9 +218,17 @@ $(document).ready(function () {
 	function gameLoop() {
 		angleCheck();
     areaCheck();
+    asteroidAreaCheck();
     unloadScrollBars();
-    moveAsteroid(asteroidXLoc, asteroidYLoc, asteroidAngle);
-   
+
+    createAsteroid(Math.random()*screenx, Math.random()*screeny,Math.random()*360);
+    
+
+    /*
+        if (asteroidCount != maxAsteroidCount){
+      createAsteroid(Math.random()*screenx, Math.random()*screeny,Math.random()*360);
+    }
+    */
 
 		if (keys[direction.RIGHT]) {
 			angle = angle + game.ROTATE_ANGLE;
@@ -184,7 +239,6 @@ $(document).ready(function () {
 			$ship.css("transform", "rotate(" + angle + "deg)");
 		}
 		if (keys[direction.SPACE]) {
-			console.log(locked);
 			if (!locked) {
 				locked = true;
 				var snd = new Audio("assets/Blast.mp3");
@@ -211,7 +265,9 @@ $(document).ready(function () {
 		updatePosition();
     updateBullets();
     updateAsteroids();
-		requestAnimationFrame(gameLoop);
+    requestAnimationFrame(gameLoop);
+    
+
 	}
 
 	gameLoop();
