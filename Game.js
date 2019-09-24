@@ -16,7 +16,7 @@ const game = {
 	ROTATE_ANGLE: 5,
 	DECELERATION: 0.98,
 	SMOOTH_ACCELERATION_CONST: 0.03,
-	SHIP_RADIUS: 50,
+	SHIP_RADIUS: 20,
 }
 
 $(document).ready(function () {
@@ -68,45 +68,26 @@ $(document).ready(function () {
 		}
 	}
 
-	// function fireBullet(x, y, ang) {
-	// 	bulletCount++;
-	// 	let t = $("body").append(
-	// 		$("<img src='assets/bullet.png'>")
-	// 			.addClass("bullet")
-	// 			.css({ left: x + 60, top: y + 20 })
-	// 	);
-	// 	t.attr("id", bulletCount);
-	// 	let bull = new Bullet(x, y, ang);
-	// 	return bull;
-	// }
-
-	// function Bullet(x, y, ang) {
-	// 	// `this` is the instance which is currently being created
-
-	// 	this.xloc = x;
-	// 	this.yloc = y;
-	// 	this.angle = ang;
-	// 	return this;
-	// 	// No need to return, but you can use `return this;` if you want
-	// }
-
-	// function update(bull) {
-	// 	$("[class^='bullet']").each(function () {
-	// 		bull.xval += 7 * Math.cos(((bull.angle - 90) * Math.PI) / 180);
-	// 		bull.yval += 7 * Math.sin(((bull.angle - 90) * Math.PI) / 180);
-	// 		$(this).css("left", bull.xval + "px");
-	// 		$(this).css("top", bull.yval + "px");
-	// 	});
-	// }
+	/**
+	 * adjust angle accordingly
+	 */
+	function angleCheck() {
+		if (angle > 360) {
+			angle = 0;
+		} 
+		if (angle < 0) {
+			angle = 360;
+		}
+	}
 
 	function fireBullet(x, y, ang) {
 		bulletCount++;
 		let bull = $("#bulletList").append(
-					$("<li " + "id=" + bulletCount + "-" + ang + ">").append(
-					$("<img src='assets/bullet.png'>")
-						.addClass("bullet")
-						.css({left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)"})
-					));
+			$("<li " + "id=" + bulletCount + "-" + ang + ">").append(
+				$("<img src='assets/bullet.png'>")
+					.addClass("bullet")
+					.css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })
+			));
 	}
 
 	let locked = false;
@@ -135,7 +116,7 @@ $(document).ready(function () {
 	function updateBullets() {
 		const sy = $(window).height();
 		const sx = $(window).width();
-		$("li").each(function (){
+		$("li").each(function () {
 			let bul = $(this);
 			const bul_angle = bul.attr("id");
 			const angle = bul_angle.split("-")[1];
@@ -153,13 +134,15 @@ $(document).ready(function () {
 	}
 
 	function gameLoop() {
+		angleCheck();
 		areaCheck();
+
 		if (keys[direction.RIGHT]) {
-			angle = (angle + game.ROTATE_ANGLE) % 360;
+			angle = angle + game.ROTATE_ANGLE;
 			$ship.css("transform", "rotate(" + angle + "deg)");
 		}
 		if (keys[direction.LEFT]) {
-			angle = (angle - game.ROTATE_ANGLE) % 360;
+			angle = angle - game.ROTATE_ANGLE;
 			$ship.css("transform", "rotate(" + angle + "deg)");
 		}
 		if (keys[direction.SPACE]) {
