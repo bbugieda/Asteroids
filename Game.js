@@ -48,7 +48,12 @@ $(document).ready(function () {
 
 	let bulletCount = 0;
 	const screeny = $(window).height();
-	const screenx = $(window).width();
+  const screenx = $(window).width();
+  
+  let asteroidCount = 0;
+  let asteroidXLoc = 0;
+  let asteroidYLoc = 0;
+  let asteroidAngle = 0;
 	/**
 	 * check for ship going out of screen 
 	 */
@@ -88,7 +93,17 @@ $(document).ready(function () {
 					.addClass("bullet")
 					.css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })
 			));
-	}
+  }
+  
+  function moveAsteroid(x,y, ang){
+    asteroidCount++;
+    let asteroid = $('#asteroidList').append(
+      $("<li " + "id=" + bulletCount + "-" + ang + ">").append(
+        $("<img src = 'assets/asteroid.png'>")
+        .addClass("asteroid")
+        .css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })
+      ));
+  }
 
 	let locked = false;
 
@@ -126,16 +141,36 @@ $(document).ready(function () {
 			bul_y += 10 * Math.sin(((angle - 90) * Math.PI) / 180);
 			bul.children().css("top", bul_y + "px");
 			bul.children().css("left", bul_x + "px");
-
-			if (bul_x > screenx || bul_x < 0 || bul_y > screeny || bul_y < 0) {
-				bul.remove();
-			}
+ 
 		});
-	}
+  }
+
+  function unloadScrollBars() {
+    document.documentElement.style.overflow = 'hidden';  // firefox, chrome
+    document.body.scroll = "no"; // ie only
+}
+  
+  function updateAsteroids(){
+    $("li").each(function (){
+      let asteroid = $(this);
+      const asteroid_angle = angle.attr("id");
+      const angle = asteroid_angle.split("-")[1];
+      let asteroid_x = parseFloat(asteroid.children().css("left"));
+			let asteroid_y = parseFloat(asteroid.children().css("top"));
+			asteroid_x += 10 * Math.cos(((angle - 90) * Math.PI) / 180);
+			asteroid_y += 10 * Math.sin(((angle - 90) * Math.PI) / 180);
+			asteroid.children().css("top", asteroid_y + "px");
+      asteroid.children().css("left", asteroid_x + "px");
+      
+    });
+  }
 
 	function gameLoop() {
 		angleCheck();
-		areaCheck();
+    areaCheck();
+    unloadScrollBars();
+    moveAsteroid(asteroidXLoc, asteroidYLoc, asteroidAngle);
+   
 
 		if (keys[direction.RIGHT]) {
 			angle = angle + game.ROTATE_ANGLE;
@@ -153,7 +188,8 @@ $(document).ready(function () {
 				snd.play();
 				let xloc = parseFloat($ship.css("left"));
 				let yloc = parseFloat($ship.css("top"));
-				fireBullet(xloc, yloc, angle);
+        fireBullet(xloc, yloc, angle);
+        //moveAsteroid(xloc, yloc, angle);
 
 				setTimeout(function () {
 					locked = false;
@@ -170,7 +206,8 @@ $(document).ready(function () {
 			velocityY *= game.DECELERATION;
 		}
 		updatePosition();
-		updateBullets();
+    updateBullets();
+    updateAsteroids();
 		requestAnimationFrame(gameLoop);
 	}
 

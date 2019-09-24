@@ -15,6 +15,16 @@
 	position: absolute;
 }
 
+.asteroid{
+	width: 100px;
+	height: 100px;
+	position: absolute;
+	transform: none;
+	/* left: 50%; */
+	/* top: 50%; */
+	display: none;
+}
+
 #splashscreen {
 	background-image: url('assets/cover.png');
 	height: 100%;
