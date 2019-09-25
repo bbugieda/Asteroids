@@ -158,6 +158,7 @@ $(document).ready(function () {
   }*/
 
 	let locked = false;
+	let locked1 = false;
 
 	/**
 	 * update position of space ship based on 
@@ -220,9 +221,13 @@ $(document).ready(function () {
     areaCheck();
     asteroidAreaCheck();
     unloadScrollBars();
-
-    createAsteroid(Math.random()*screenx, Math.random()*screeny,Math.random()*360);
-    
+	if(!locked1){
+		locked1=true;
+	createAsteroid(Math.random()*screenx, Math.random()*screeny,Math.random()*360);
+	setTimeout(function () {
+		locked1 = false;
+	}, 250);
+}
 
     /*
         if (asteroidCount != maxAsteroidCount){
