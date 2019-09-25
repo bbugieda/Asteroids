@@ -18,6 +18,7 @@ const game = {
 	SMOOTH_ACCELERATION_CONST: 0.03,
 	SHIP_HEIGHT: 100,
 	SHIP_WIDTH: 100,
+	MAX_ASTEROID_CNT: 10,
 }
 
 $(document).ready(function () {
@@ -26,7 +27,7 @@ $(document).ready(function () {
 		$("#splashscreen").fadeOut(1000);
 		$(".spaceShip").show();
 		$("body").show();
-		});
+	});
 
 	let keys = {}; //dictionary to keep track of key presses
 	$(document)
@@ -43,12 +44,27 @@ $(document).ready(function () {
 
 	const $ship = $(".spaceShip");
 	resetShipPosition();
-	
+
 	function resetShipPosition() {
 		$ship.css("top", screen.height * 0.5 + "px");
 		$ship.css("left", screen.width * 0.5 + "px");
 	}
 
+	/**
+	 * populate the screen with asteroids
+	 * when launch
+	 */
+	let asteroidCount = 0;
+	function createAsteroids() {
+		//TODO FINISH
+		const randomAngle = 0;
+		for (let i = 0; i < game.MAX_ASTEROID_CNT; i++) {
+			randomAngle = Math.floor(Math.random() * 361);
+			$("#asteroidList").append(
+			);
+			asteroidCount++;
+		}
+	}
 
 	let angle = 0;
 	let accelerationX = 0;
@@ -67,7 +83,7 @@ $(document).ready(function () {
 		if (xloc > screen.width) {
 			$ship.css("left", -game.SHIP_WIDTH + "px");
 		} else if (xloc < -game.SHIP_WIDTH) {
-			$ship.css("left", screen.width  + "px");
+			$ship.css("left", screen.width + "px");
 		}
 		if (yloc > screen.height - 50) {
 			$ship.css("top", -game.SHIP_HEIGHT + "px");
@@ -82,7 +98,7 @@ $(document).ready(function () {
 	function angleCheck() {
 		if (angle > 360) {
 			angle = 0;
-		} 
+		}
 		if (angle < 0) {
 			angle = 360;
 		}
@@ -96,14 +112,22 @@ $(document).ready(function () {
 		document.body.scroll = "no"; // ie only
 	}
 
+	/**
+	 * create an instance of bullet
+	 * and display it dynamically
+	 * @param {number} x coordinate
+	 * @param {number} y coordinate
+	 * @param {number} ang - angle to be fire
+	 */
 	function fireBullet(x, y, ang) {
 		bulletCount++;
 		let bull = $("#bulletList").append(
-			$("<li " + "id=" + bulletCount + "-" + ang + ">").append(
-				$("<img src='assets/bullet.png'>")
-					.addClass("bullet")
-					.css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })
-			));
+			$("<li " + " id=" + bulletCount + "-" + ang + ">")
+				.addClass("bullet_list")
+				.append(
+					$("<img src='assets/bullet.png'>")
+						.addClass("bullet")
+						.css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })));
 	}
 
 	let locked = false;
@@ -130,12 +154,10 @@ $(document).ready(function () {
 	 * update positions of fired bullets
 	 */
 	function updateBullets() {
-		// const sy = $(window).height();
-		// const sx = $(window).width();
-		$("li").each(function () {
+		$("li.bullet_list").each(function () {
 			let bul = $(this);
 			const bul_angle = bul.attr("id");
-			const angle = bul_angle.split("-")[1];
+			const angle = bul_angle.slice(bul_angle.indexOf("-") + 1);
 			let bul_x = parseFloat(bul.children().css("left"));
 			let bul_y = parseFloat(bul.children().css("top"));
 			bul_x += 10 * Math.cos(((angle - 90) * Math.PI) / 180);
@@ -148,15 +170,30 @@ $(document).ready(function () {
 			}
 		});
 	}
-	var score = 0;
+
+	/**
+	 * update positions of moving asteroids
+	 */
+	function updateAsteroids() {
+		// TODO
+	}
+
+	/**
+	 * check if ship or bullets collides with asteroids
+	 */
+	function collisionDetect() {
+		// TODO
+	}
+
+	let score = 0;
 	function incrementScore() {
 		score++;
-	  }
+	}
 
-	  function updateScore(score) {
-		$('#score').text(score);
-	  }
-	  
+	let $score = $("#score");
+	function updateScore(score) {
+		$score.text(score);
+	}
 
 	function gameLoop() {
 		angleCheck();
@@ -172,7 +209,6 @@ $(document).ready(function () {
 			$ship.css("transform", "rotate(" + angle + "deg)");
 		}
 		if (keys[direction.SPACE]) {
-			console.log(locked);
 			if (!locked) {
 				locked = true;
 				var snd = new Audio("assets/Blast.mp3");
