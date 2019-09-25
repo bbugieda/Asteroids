@@ -133,11 +133,10 @@ $(document).ready(function () {
 					.addClass("asteroid")
 					.css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })
       ));
-      console.log({asteroidList});
+      //console.log({asteroidList});
   }
   
 	let locked = false;
-	let locked1 = false;
 
 	/**
 	 * update position of space ship based on 
@@ -193,8 +192,9 @@ $(document).ready(function () {
 			asteroid_y += 3 * Math.sin(((angle - 90) * Math.PI) / 180);
 			asteroid.children().css("top", asteroid_y + "px");
       asteroid.children().css("left", asteroid_x + "px");
-
-      /*
+01
+      //these cases need to handle if an asteroid goes off the screen, and bring them back, rather than delete like with bullets
+      //I think the error is because it's a list of asteroids
       if (asteroid_x > screenx){
         asteroid_x -= screenx;
       }
@@ -210,7 +210,7 @@ $(document).ready(function () {
       if(asteroid_y < 0){
         asteroid_y += screeny;
       }
-      */
+      
       
       
     });
@@ -222,13 +222,15 @@ $(document).ready(function () {
     
     asteroidAreaCheck();
     unloadScrollBars();
+
+
 	if(!locked1){
 		locked1=true;
 	createAsteroid(Math.random()*screenx, Math.random()*screeny,Math.random()*360);
 	setTimeout(function () {
 		locked1 = false;
 	}, 250);
-}
+    
 
     /*
         if (asteroidCount != maxAsteroidCount){
