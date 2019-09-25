@@ -16,17 +16,17 @@ const game = {
 	ROTATE_ANGLE: 5,
 	DECELERATION: 0.98,
 	SMOOTH_ACCELERATION_CONST: 0.03,
-	SHIP_RADIUS: 20,
-	SCREEN_X: $(window).height(),
-	SCREEN_Y: $(window).width(),
+	SHIP_HEIGHT: 100,
+	SHIP_WIDTH: 100,
 }
 
 $(document).ready(function () {
+	unloadScrollBars();
 	$("#StartButton").click(function () {
 		$("#splashscreen").fadeOut(1000);
 		$(".spaceShip").show();
 		$("body").show();
-	});
+		});
 
 	let keys = {}; //dictionary to keep track of key presses
 	$(document)
@@ -42,6 +42,14 @@ $(document).ready(function () {
 		});
 
 	const $ship = $(".spaceShip");
+	resetShipPosition();
+	
+	function resetShipPosition() {
+		$ship.css("top", screen.height * 0.5 + "px");
+		$ship.css("left", screen.width * 0.5 + "px");
+	}
+
+
 	let angle = 0;
 	let accelerationX = 0;
 	let accelerationY = 0;
@@ -56,15 +64,15 @@ $(document).ready(function () {
 		let xloc = parseFloat($ship.css("left"));
 		let yloc = parseFloat($ship.css("top"));
 
-		if (xloc > game.SCREEN_X + game.SHIP_RADIUS) {
-			$ship.css("left", -game.SHIP_RADIUS + "px");
-		} else if (xloc < -game.SHIP_RADIUS) {
-			$ship.css("left", game.SCREEN_X + game.SHIP_RADIUS + "px");
+		if (xloc > screen.width) {
+			$ship.css("left", -game.SHIP_WIDTH + "px");
+		} else if (xloc < -game.SHIP_WIDTH) {
+			$ship.css("left", screen.width  + "px");
 		}
-		if (yloc > game.SCREEN_Y + game.SHIP_RADIUS) {
-			$ship.css("top", -game.SHIP_RADIUS + "px");
-		} else if (yloc < -game.SHIP_RADIUS) {
-			$ship.css("top", game.SCREEN_Y + game.SHIP_RADIUS + "px");
+		if (yloc > screen.height - 50) {
+			$ship.css("top", -game.SHIP_HEIGHT + "px");
+		} else if (yloc < -game.SHIP_HEIGHT) {
+			$ship.css("top", screen.height + -game.SHIP_HEIGHT + "px");
 		}
 	}
 
@@ -78,6 +86,14 @@ $(document).ready(function () {
 		if (angle < 0) {
 			angle = 360;
 		}
+	}
+
+	/**
+	 * remove scrollbar
+	 */
+	function unloadScrollBars() {
+		document.documentElement.style.overflow = 'hidden';  // firefox, chrome
+		document.body.scroll = "no"; // ie only
 	}
 
 	function fireBullet(x, y, ang) {
@@ -127,7 +143,7 @@ $(document).ready(function () {
 			bul.children().css("top", bul_y + "px");
 			bul.children().css("left", bul_x + "px");
 
-			if (bul_x > game.SCREEN_X || bul_x < 0 || bul_y > game.SCREEN_Y || bul_y < 0) {
+			if (bul_x > screen.width || bul_x < 0 || bul_y > screen.height || bul_y < 0) {
 				bul.remove();
 			}
 		});
