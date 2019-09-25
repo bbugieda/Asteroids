@@ -41,7 +41,8 @@ $(document).ready(function () {
 		});
 
   const $ship = $(".spaceShip");
-  const $asteroid = $(".asteroid");
+  const $asteroid = $(".test");
+  console.log($asteroid);
 
 	let angle = 0;
 	let accelerationX = 0;
@@ -53,7 +54,7 @@ $(document).ready(function () {
 	const screeny = $(window).height();
   const screenx = $(window).width();
   
-  let maxAsteroidCount = 10;
+  let maxAsteroidCount = 1;
   let asteroidCount = 0;
   let asteroidXLoc = 0;
   let asteroidYLoc = 0;
@@ -73,32 +74,32 @@ $(document).ready(function () {
 		let xloc = parseFloat($ship.css("left"));
     let yloc = parseFloat($ship.css("top"));
     
-		if (xloc > screenx + game.SHIP_RADIUS) {
-			$ship.css("left", -game.SHIP_RADIUS + "px");
-		} else if (xloc < -game.SHIP_RADIUS) {
-			$ship.css("left", screenx + game.SHIP_RADIUS + "px");
+		if (xloc > screenx) {
+			$ship.css("left", 0 + "px");
+		} else if (xloc < 0) {
+			$ship.css("left", screenx + "px");
 		}
-		if (yloc > screeny + game.SHIP_RADIUS) {
-			$ship.css("top", -game.SHIP_RADIUS + "px");
-		} else if (yloc < -game.SHIP_RADIUS) {
-			$ship.css("top", screeny + game.SHIP_RADIUS + "px");
+		if (yloc > screeny) {
+			$ship.css("top", 0 + "px");
+		} else if (yloc < 0) {
+			$ship.css("top", screeny + "px");
     }
-    //
   }
   
   function asteroidAreaCheck(){
     let asteroidXLoc = parseFloat($asteroid.css("left"));
     let asteroidYLoc = parseFloat($asteroid.css("top"));
+    
 
-    if (asteroidXLoc > screenx + game.ASTEROID_RADIUS) {
-			$asteroid.css("left", -game.ASTEROID_RADIUS + "px");
-		} else if (asteroidXLoc < -game.ASTEROID_RADIUS) {
-			$asteroid.css("left", screenx + game.ASTEROID_RADIUS + "px");
+    if (asteroidXLoc > screenx ) {
+			$asteroid.css("left", 0 + "px");
+		} else if (asteroidXLoc < 0) {
+			$asteroid.css("left", screenx + "px");
 		}
-		if (asteroidYLoc > screeny + game.ASTEROID_RADIUS) {
-			$asteroid.css("top", -game.ASTEROID_RADIUS + "px");
-		} else if (asteroidYLoc < -game.ASTEROID_RADIUS) {
-			$asteroid.css("top", screeny + game.ASTEROID_RADIUS + "px");
+		if (asteroidYLoc > screeny) {
+			$asteroid.css("top", 0 + "px");
+		} else if (asteroidYLoc < 0) {
+			$asteroid.css("top", screeny + "px");
 		}
   }
 
@@ -124,39 +125,17 @@ $(document).ready(function () {
 			));
   }
 
-
-  /*
-  function createAsteroid(x, y, ang) {
-		let asteroid = $("#asteroidList").append(
-			$("<li " + "id=" + "-" + ang + ">").append(
-				$("<img src='assets/asteroid.png'>")
-					.addClass("asteroid")
-					.css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })
-			));
-  }
-  */
-
     function createAsteroid(x, y, ang) {
     asteroidCount++;
 		let asteroid = $("#asteroidList").append(
-			$("<li " + "id=" + asteroidCount + "-" + ang + ">").append(
+			$("<li " + "class=test " + "id=" + asteroidCount + "-" + ang + ">").append(
 				$("<img src='assets/asteroid.png'>")
 					.addClass("asteroid")
 					.css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })
-			));
+      ));
+      console.log({asteroidList});
   }
   
-  /*
-  function moveAsteroid(x,y, ang){
-    asteroidCount++;
-    let asteroid = $('#asteroidList').append(
-      $("<li " + "id=" + bulletCount + "-" + ang + ">").append(
-        $("<img src='assets/asteroid.png'>")
-        .addClass("asteroid")
-        .css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })
-      ));
-  }*/
-
 	let locked = false;
 	let locked1 = false;
 
@@ -196,7 +175,9 @@ $(document).ready(function () {
 			bul.children().css("left", bul_x + "px");
  
 			if (bul_x > screenx || bul_x < 0 || bul_y > screeny || bul_y < 0) {
-				bul.remove();
+        ///bul_x = (-(bul_x));
+        //bul_y = (-(bul_y));
+        bul.remove();
 			}
 		});
   }
@@ -212,6 +193,25 @@ $(document).ready(function () {
 			asteroid_y += 3 * Math.sin(((angle - 90) * Math.PI) / 180);
 			asteroid.children().css("top", asteroid_y + "px");
       asteroid.children().css("left", asteroid_x + "px");
+
+      /*
+      if (asteroid_x > screenx){
+        asteroid_x -= screenx;
+      }
+      
+      if(asteroid_x < 0){
+        asteroid_x += screenx;
+      } 
+
+      if(asteroid_y > screeny) {
+        asteroid_y -= screeny;
+      }
+
+      if(asteroid_y < 0){
+        asteroid_y += screeny;
+      }
+      */
+      
       
     });
   }
@@ -219,8 +219,10 @@ $(document).ready(function () {
 	function gameLoop() {
 		angleCheck();
     areaCheck();
+    
     asteroidAreaCheck();
     unloadScrollBars();
+<<<<<<< HEAD
 	if(!locked1){
 		locked1=true;
 	createAsteroid(Math.random()*screenx, Math.random()*screeny,Math.random()*360);
@@ -228,6 +230,14 @@ $(document).ready(function () {
 		locked1 = false;
 	}, 250);
 }
+=======
+
+
+    if(asteroidCount<maxAsteroidCount){
+      createAsteroid(Math.random()*screenx, Math.random()*screeny,Math.random()*360);
+    }
+    
+>>>>>>> 2003810f41329db147a0de2ff70eb282c6a57b30
 
     /*
         if (asteroidCount != maxAsteroidCount){
