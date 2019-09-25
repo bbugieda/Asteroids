@@ -222,7 +222,6 @@ $(document).ready(function () {
     
     asteroidAreaCheck();
     unloadScrollBars();
-<<<<<<< HEAD
 	if(!locked1){
 		locked1=true;
 	createAsteroid(Math.random()*screenx, Math.random()*screeny,Math.random()*360);
@@ -230,14 +229,6 @@ $(document).ready(function () {
 		locked1 = false;
 	}, 250);
 }
-=======
-
-
-    if(asteroidCount<maxAsteroidCount){
-      createAsteroid(Math.random()*screenx, Math.random()*screeny,Math.random()*360);
-    }
-    
->>>>>>> 2003810f41329db147a0de2ff70eb282c6a57b30
 
     /*
         if (asteroidCount != maxAsteroidCount){
