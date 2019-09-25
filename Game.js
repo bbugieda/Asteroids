@@ -19,6 +19,14 @@ const game = {
 	SHIP_RADIUS: 20,
 }
 
+
+
+
+
+
+
+
+
 $(document).ready(function () {
 	$("#StartButton").click(function () {
 		$("#splashscreen").fadeOut(1000);
@@ -132,10 +140,20 @@ $(document).ready(function () {
 			}
 		});
 	}
+	var score = 0;
+	function incrementScore() {
+		score++;
+	  }
+
+	  function updateScore(score) {
+		$('#score').text(score);
+	  }
+	  
 
 	function gameLoop() {
 		angleCheck();
 		areaCheck();
+
 
 		if (keys[direction.RIGHT]) {
 			angle = angle + game.ROTATE_ANGLE;
@@ -151,6 +169,8 @@ $(document).ready(function () {
 				locked = true;
 				var snd = new Audio("assets/Blast.mp3");
 				snd.play();
+				incrementScore();
+				updateScore(score);
 				let xloc = parseFloat($ship.css("left"));
 				let yloc = parseFloat($ship.css("top"));
 				fireBullet(xloc, yloc, angle);
