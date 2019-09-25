@@ -17,15 +17,9 @@ const game = {
 	DECELERATION: 0.98,
 	SMOOTH_ACCELERATION_CONST: 0.03,
 	SHIP_RADIUS: 20,
+	SCREEN_X: $(window).height(),
+	SCREEN_Y: $(window).width(),
 }
-
-
-
-
-
-
-
-
 
 $(document).ready(function () {
 	$("#StartButton").click(function () {
@@ -55,8 +49,6 @@ $(document).ready(function () {
 	let velocityY = 0;
 
 	let bulletCount = 0;
-	const screeny = $(window).height();
-	const screenx = $(window).width();
 	/**
 	 * check for ship going out of screen 
 	 */
@@ -64,15 +56,15 @@ $(document).ready(function () {
 		let xloc = parseFloat($ship.css("left"));
 		let yloc = parseFloat($ship.css("top"));
 
-		if (xloc > screenx + game.SHIP_RADIUS) {
+		if (xloc > game.SCREEN_X + game.SHIP_RADIUS) {
 			$ship.css("left", -game.SHIP_RADIUS + "px");
 		} else if (xloc < -game.SHIP_RADIUS) {
-			$ship.css("left", screenx + game.SHIP_RADIUS + "px");
+			$ship.css("left", game.SCREEN_X + game.SHIP_RADIUS + "px");
 		}
-		if (yloc > screeny + game.SHIP_RADIUS) {
+		if (yloc > game.SCREEN_Y + game.SHIP_RADIUS) {
 			$ship.css("top", -game.SHIP_RADIUS + "px");
 		} else if (yloc < -game.SHIP_RADIUS) {
-			$ship.css("top", screeny + game.SHIP_RADIUS + "px");
+			$ship.css("top", game.SCREEN_Y + game.SHIP_RADIUS + "px");
 		}
 	}
 
@@ -135,7 +127,7 @@ $(document).ready(function () {
 			bul.children().css("top", bul_y + "px");
 			bul.children().css("left", bul_x + "px");
 
-			if (bul_x > screenx || bul_x < 0 || bul_y > screeny || bul_y < 0) {
+			if (bul_x > game.SCREEN_X || bul_x < 0 || bul_y > game.SCREEN_Y || bul_y < 0) {
 				bul.remove();
 			}
 		});
