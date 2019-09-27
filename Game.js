@@ -227,7 +227,9 @@ $(document).ready(function () {
 		let asteroid_x = parseFloat(asteroid.style.left);
 		let asteroid_y = parseFloat(asteroid.style.top);
 		let asteroid_w = parseFloat(asteroid.style.width);
+		asteroid_w -= 20;
 		let asteroid_h = parseFloat(asteroid.style.height);
+		asteroid_h -= 20;
 		let bullet_x = parseFloat(bullet.style.left);
 		let bullet_y = parseFloat(bullet.style.top);
 		let bullet_w = parseFloat(bullet.style.width);
