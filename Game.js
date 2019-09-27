@@ -90,9 +90,7 @@ $(document).ready(function () {
 	 * @param {number} y 
 	 */
 	function createAsteroid(x, y, SIZE) {
-		let randomAngle = 0;
-
-		randomAngle = Math.floor(Math.random() * 361);
+		let randomAngle = randomAngle = Math.floor(Math.random() * 361);
 
 		let asteroid_img = `<img id=${randomAngle} class='asteroid' src='assets/asteroid.png' style='left: ${x}px; top: ${y}px; width: ${SIZE}px; height: ${SIZE}px'>`
 		document.getElementById("asteroidListDiv").innerHTML += asteroid_img;
@@ -109,12 +107,10 @@ $(document).ready(function () {
 		let SMALL_ASTEROID_SIZE = 30;
 
 		randomAngle = Math.floor(Math.random() * 361);
-		xPos = x;
-		yPos = y;
 
-		createAsteroid(xPos, yPos, SMALL_ASTEROID_SIZE);
+		createAsteroid(x, y, SMALL_ASTEROID_SIZE);
 
-		let asteroid_img = `<img id=${randomAngle} class='asteroid' src='assets/asteroid.png' style='left: ${randomX}px; top: ${randomY}px; width: ${SMALL_ASTEROID_SIZE}px; height: ${SMALL_ASTEROID_SIZE}px'>`
+		let asteroid_img = `<img id=${randomAngle} class='asteroid' src='assets/asteroid.png' style='left: ${x}px; top: ${y}px; width: ${SMALL_ASTEROID_SIZE}px; height: ${SMALL_ASTEROID_SIZE}px'>`
 		document.getElementById("asteroidListDiv").innerHTML += asteroid_img;
 	}
 
@@ -256,12 +252,18 @@ $(document).ready(function () {
 		for (let asteroid of asteroidList) {
 			let bList = document.getElementsByClassName("bullet");
 			for (let bullet of bList) {
-				if (isCollide(asteroid, bullet)) {
-					let xPos = asteroid.x;
-					let yPos = asteroid.y;
-					createSmallAsteroid(xPos, yPos);
-					asteroid.remove();
-					createAsteroid();
+				if(isCollide(asteroid, bullet)) {
+					if (isCollide(asteroid, bullet)) {
+						let xPos = asteroid.x;
+						let yPos = asteroid.y;
+						asteroid.remove();
+	
+						// breaks asteroid into 3 separate small asteroids
+						splitInto3Asteroids(xPos, yPos);
+						
+						// creates one larger asteroid offscreen
+						createAsteroid();
+					}
 				}
 			}
 		}
@@ -273,13 +275,12 @@ $(document).ready(function () {
 	 * Removes the larger asteroid from the list of asteroids and creates 3 smaller ones in its place
 	 * Sends the three smaller asteroids into randomly generated directions
 	 */
-	function splitInto3Asteroids(largeAsteroid) {
+	function splitInto3Asteroids(largeAsteroid, x, y) {
 		let asteroidList = document.getElementsByClassName("asteroid");
 
-
-		let small1 = createAsteroid();
-		let small2 = createAsteroid();
-		let small3 = createAsteroid();
+		let small1 = createSmallAsteroid(x, y);
+		let small2 = createSmallAsteroid(x, y);
+		let small3 = createSmallAsteroid(x, y);
 	}
 
 	function isCollide(asteroid, bullet) {
