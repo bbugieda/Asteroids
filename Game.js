@@ -92,7 +92,7 @@ $(document).ready(function () {
 		let yloc = parseFloat(ship.style.top);
 
 		if (xloc > game.SCREEN_WIDTH) {
-			ship.style.left = -game.SCREEN_WIDTH + "px";
+			ship.style.left = -game.SHIP_WIDTH + "px";
 		} else if (xloc < -game.SHIP_WIDTH) {
 			ship.style.left = game.SCREEN_WIDTH + "px";
 		}
