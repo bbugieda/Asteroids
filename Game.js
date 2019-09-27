@@ -19,6 +19,8 @@ const game = {
 	SHIP_HEIGHT: 100,
 	SHIP_WIDTH: 100,
 	MAX_ASTEROID_CNT: 10,
+	SCREEN_WIDTH: screen.width,
+	SCREEN_HEIGHT: screen.height,
 }
 
 $(document).ready(function () {
@@ -31,54 +33,48 @@ $(document).ready(function () {
 	});
 
 	let keys = {}; //dictionary to keep track of key presses
-	$(document)
-		.keydown(function (event) {
-			if (event.which == direction.RIGHT || event.which == direction.LEFT || event.which == direction.SPACE || event.which == direction.UP) {
-				keys[event.which] = true;
-			}
-		})
-		.keyup(function (event) {
-			if (event.which == direction.RIGHT || event.which == direction.LEFT || event.which == direction.SPACE || event.which == direction.UP) {
-				keys[event.which] = false;
-			}
-		});
+	document.addEventListener("keydown", function (event) {
+		if (event.keyCode == direction.RIGHT || event.keyCode == direction.LEFT || event.keyCode == direction.SPACE || event.keyCode == direction.UP) {
+			keys[event.keyCode] = true;
+		}
+	});
 
-	const $ship = $(".spaceShip");
+	document.addEventListener("keyup", function (event) {
+		if (event.keyCode == direction.RIGHT || event.keyCode == direction.LEFT || event.keyCode == direction.SPACE || event.keyCode == direction.UP) {
+			keys[event.keyCode] = false;
+		}
+	});
+
+	const ship = document.getElementById("spaceShip");
 	resetShipPosition();
 
 	function resetShipPosition() {
-		$ship.css("top", screen.height * 0.5 + "px");
-		$ship.css("left", screen.width * 0.5 + "px");
+		ship.style.left = (game.SCREEN_WIDTH * 0.5) + "px";
+		ship.style.top = (game.SCREEN_HEIGHT * 0.5) + "px";
 	}
 
 	/**
 	 * populate the screen with asteroids
 	 * WHEN LAUNCH
 	 */
-	
+
 	function createAsteroidList() {
 		for (let i = 0; i < game.MAX_ASTEROID_CNT; i++) {
 			createAsteroid();
 		}
 	}
 
-	let asteroidCount = 0;
 	function createAsteroid() {
 		let randomAngle = 0;
 		let randomX = 0;
 		let randomY = 0;
 
 		randomAngle = Math.floor(Math.random() * 361);
-		randomX = Math.floor(Math.random() * (screen.width + 1));
-		randomY = Math.floor(Math.random() * (screen.height + 1));
+		randomX = Math.floor(Math.random() * (game.SCREEN_WIDTH + 1));
+		randomY = Math.floor(Math.random() * (game.SCREEN_HEIGHT + 1));
 
-		$("#asteroidListDiv").append(
-			$("<img " + "id=" + randomAngle + " src='assets/asteroid.png'>")
-				.addClass("asteroid")
-				.css({ left: randomX, top: randomY })
-		);
-
-		asteroidCount++;
+		let asteroid_img = `<img id=${randomAngle} class='asteroid' src='assets/asteroid.png' style='left: ${randomX}px; top: ${randomY}px;'>`
+		document.getElementById("asteroidListDiv").innerHTML += asteroid_img;
 	}
 
 	let angle = 0;
@@ -92,18 +88,18 @@ $(document).ready(function () {
 	 * check for ship going out of screen 
 	 */
 	function areaCheck() {
-		let xloc = parseFloat($ship.css("left"));
-		let yloc = parseFloat($ship.css("top"));
+		let xloc = parseFloat(ship.style.left);
+		let yloc = parseFloat(ship.style.top);
 
-		if (xloc > screen.width) {
-			$ship.css("left", -game.SHIP_WIDTH + "px");
+		if (xloc > game.SCREEN_WIDTH) {
+			ship.style.left = -game.SCREEN_WIDTH + "px";
 		} else if (xloc < -game.SHIP_WIDTH) {
-			$ship.css("left", screen.width + "px");
+			ship.style.left = game.SCREEN_WIDTH + "px";
 		}
-		if (yloc > screen.height - 50) {
-			$ship.css("top", -game.SHIP_HEIGHT + "px");
+		if (yloc > game.SCREEN_HEIGHT - 50) {
+			ship.style.top = -game.SHIP_HEIGHT + "px";
 		} else if (yloc < -game.SHIP_HEIGHT) {
-			$ship.css("top", screen.height + -game.SHIP_HEIGHT + "px");
+			ship.style.top = game.SCREEN_HEIGHT + -game.SHIP_HEIGHT + "px";
 		}
 	}
 
@@ -136,11 +132,8 @@ $(document).ready(function () {
 	 */
 	function fireBullet(x, y, ang) {
 		bulletCount++;
-		$("#bulletListDiv").append(
-			$("<img " + "id=" + ang + " src='assets/bullet.png'>")
-				.addClass("bullet")
-				.css({ left: x + 60, top: y + 20, "transform": "rotate(" + ang + "deg)" })
-		);
+		let bul_img = `<img id=${ang} class='bullet' src='assets/bullet.png' style='left: ${x + 60}px; top: ${y + 20}px; transform: rotate(${ang}deg)'>`
+		document.getElementById("bulletListDiv").innerHTML += bul_img;
 	}
 
 	let locked = false;
@@ -150,8 +143,8 @@ $(document).ready(function () {
 	 * acceleration and velocity
 	 */
 	function updatePosition() {
-		let xloc = parseFloat($ship.css("left"));
-		let yloc = parseFloat($ship.css("top"));
+		let xloc = parseFloat(ship.style.left);
+		let yloc = parseFloat(ship.style.top);
 
 		// enforce speed limit
 		velocityX = (velocityX >= game.MAX_SPEED) ? game.MAX_SPEED : velocityX + accelerationX;
@@ -159,55 +152,59 @@ $(document).ready(function () {
 
 		xloc += velocityX;
 		yloc += velocityY;
-		$ship.css("top", yloc + "px");
-		$ship.css("left", xloc + "px");
+		ship.style.left = xloc + "px";
+		ship.style.top = yloc + "px";
 	}
 
 	/**
 	 * update positions of fired bullets
 	 */
 	function updateBullets() {
-		$("img.bullet").each(function () {
-			let bul = $(this);
-			const angle = bul.attr("id");
-			let bul_x = parseFloat(bul.css("left"));
-			let bul_y = parseFloat(bul.css("top"));
-			bul_x += 10 * Math.cos(((angle - 90) * Math.PI) / 180);
-			bul_y += 10 * Math.sin(((angle - 90) * Math.PI) / 180);
-			bul.css("top", bul_y + "px");
-			bul.css("left", bul_x + "px");
-
-			if (bul_x > screen.width || bul_y < 0 || bul_y > screen.height || bul_y < 0) {
-				bul.remove();
+		let bList = document.getElementsByClassName("bullet");
+		for (let bullet of bList) {
+			const angle = bullet.id;
+			let bullet_x = parseFloat(bullet.style.left);
+			let bullet_y = parseFloat(bullet.style.top);
+			bullet_x += 10 * Math.cos(((angle - 90) * Math.PI) / 180);
+			bullet_y += 10 * Math.sin(((angle - 90) * Math.PI) / 180);
+			bullet.style.left = bullet_x + "px";
+			bullet.style.top = bullet_y + "px";
+			if (bullet_x > game.SCREEN_WIDTH || bullet_y < 0 || bullet_y > game.SCREEN_HEIGHT || bullet_y < 0) {
+				bullet.remove();
 			}
-		});
+		}
 	}
 
 	/**
 	 * update positions of moving asteroids
 	 */
 	function updateAsteroids() {
-		$("img.asteroid").each(function () {
-			let asteroid = $(this);
-			const angle = asteroid.attr("id");
-			let asteroid_x = parseFloat(asteroid.css("left"));
-			let asteroid_y = parseFloat(asteroid.css("top"));
+		let asteroidList = document.getElementsByClassName("asteroid");
+		for (let asteroid of asteroidList) {
+			const angle = asteroid.id;
+			let asteroid_x = parseFloat(asteroid.style.left);
+			let asteroid_y = parseFloat(asteroid.style.top);
 			asteroid_x += 3 * Math.cos(((angle - 90) * Math.PI) / 180);
 			asteroid_y += 3 * Math.sin(((angle - 90) * Math.PI) / 180);
-			asteroid.css("top", asteroid_y + "px");
-			asteroid.css("left", asteroid_x + "px");
+			asteroid.style.left = asteroid_x + "px";
+			asteroid.style.top = asteroid_y + "px";
 
-			if (asteroid_x > screen.width) {
-				asteroid.css("left", 0 + "px");
+			if (asteroid_x > game.SCREEN_WIDTH) {
+				asteroid.style.left = "0px";
 			} else if (asteroid_x < 0) {
-				asteroid.css("left", screen.width + "px");
+				asteroid.style.left = game.SCREEN_WIDTH + "px";
 			}
-			if (asteroid_y > screen.height) {
-				asteroid.css("top", 0 + "px");
+			if (asteroid_y > game.SCREEN_HEIGHT) {
+				asteroid.style.top = "0px";
 			} else if (asteroid_y < 0) {
-				asteroid.css("top", screen.height + "px");
+				asteroid.style.top = game.SCREEN_HEIGHT + "px";
 			}
-		});
+
+			// if (asteroid_x > game.SCREEN_WIDTH || asteroid_y < 0 || asteroid_y > game.SCREEN_HEIGHT || asteroid_x < 0) {
+			// 	asteroid.remove();
+			// 	createAsteroid();
+			// }
+		}
 	}
 
 	/**
@@ -217,38 +214,26 @@ $(document).ready(function () {
 		// TODO
 	}
 
-	// let score = 0;
-	// function incrementScore() {
-	// 	score++;
-	// }
-
-	// let $score = $("#score");
-	// function updateScore(score) {
-	// 	$score.text(score);
-	// }
-
-
 	function gameLoop() {
 		angleCheck();
 		areaCheck();
 
 		if (keys[direction.RIGHT]) {
 			angle = angle + game.ROTATE_ANGLE;
-			$ship.css("transform", "rotate(" + angle + "deg)");
+			ship.style.transform = "rotate(" + angle + "deg)";
 		}
 		if (keys[direction.LEFT]) {
 			angle = angle - game.ROTATE_ANGLE;
-			$ship.css("transform", "rotate(" + angle + "deg)");
+			ship.style.transform = "rotate(" + angle + "deg)";
 		}
 		if (keys[direction.SPACE]) {
 			if (!locked) {
 				locked = true;
 				var snd = new Audio("assets/Blast.mp3");
 				snd.play();
-				let xloc = parseFloat($ship.css("left"));
-				let yloc = parseFloat($ship.css("top"));
+				let xloc = parseFloat(ship.style.left);
+				let yloc = parseFloat(ship.style.top);
 				fireBullet(xloc, yloc, angle);
-
 				setTimeout(function () {
 					locked = false;
 				}, 250);
@@ -269,5 +254,4 @@ $(document).ready(function () {
 		requestAnimationFrame(gameLoop);
 	}
 	gameLoop();
-	$(document).focus();
 });
