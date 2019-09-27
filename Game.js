@@ -216,6 +216,8 @@ $(document).ready(function () {
 			let bList = document.getElementsByClassName("bullet");
 			for (let bullet of bList) {
 				if(isCollide(asteroid, bullet)){
+					var snd = new Audio("assets/Explosion.m4a");
+					snd.play();
 					asteroid.remove();
 					// createAsteroid();
 				}
