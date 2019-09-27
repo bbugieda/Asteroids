@@ -219,6 +219,7 @@ $(document).ready(function () {
 					var snd = new Audio("assets/Explosion.m4a");
 					snd.play();
 					asteroid.remove();
+					bullet.remove();
 					// createAsteroid();
 				}
 	}
