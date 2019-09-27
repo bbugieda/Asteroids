@@ -73,7 +73,7 @@ $(document).ready(function () {
 		randomX = Math.floor(Math.random() * (game.SCREEN_WIDTH + 1));
 		randomY = Math.floor(Math.random() * (game.SCREEN_HEIGHT + 1));
 
-		let asteroid_img = `<img id=${randomAngle} class='asteroid' src='assets/asteroid.png' style='left: ${randomX}px; top: ${randomY}px;'>`
+		let asteroid_img = `<img id=${randomAngle} class='asteroid' src='assets/asteroid.png' style='left: ${randomX}px; top: ${randomY}px; width: ${100}px; height: ${100}px'>`
 		document.getElementById("asteroidListDiv").innerHTML += asteroid_img;
 	}
 
@@ -132,7 +132,7 @@ $(document).ready(function () {
 	 */
 	function fireBullet(x, y, ang) {
 		bulletCount++;
-		let bul_img = `<img id=${ang} class='bullet' src='assets/bullet.png' style='left: ${x + 60}px; top: ${y + 20}px; transform: rotate(${ang}deg)'>`
+		let bul_img = `<img id=${ang} class='bullet' src='assets/bullet.png' style='left: ${x + 60}px; top: ${y + 20}px; width: ${16}px; height: ${40}px; transform: rotate(${ang}deg)'>`
 		document.getElementById("bulletListDiv").innerHTML += bul_img;
 	}
 
@@ -211,8 +211,38 @@ $(document).ready(function () {
 	 * check if ship or bullets collides with asteroids
 	 */
 	function collisionDetect() {
-		// TODO
+		let asteroidList = document.getElementsByClassName("asteroid");
+		for (let asteroid of asteroidList) {
+			let bList = document.getElementsByClassName("bullet");
+			for (let bullet of bList) {
+				if(isCollide(asteroid, bullet)){
+					asteroid.remove();
+					createAsteroid();
+				}
 	}
+}
+	}
+
+	function isCollide(asteroid, bullet) {
+		let asteroid_x = parseFloat(asteroid.style.left);
+		let asteroid_y = parseFloat(asteroid.style.top);
+		let asteroid_w = parseFloat(asteroid.style.width);
+		let asteroid_h = parseFloat(asteroid.style.height);
+		let bullet_x = parseFloat(bullet.style.left);
+		let bullet_y = parseFloat(bullet.style.top);
+		let bullet_w = parseFloat(bullet.style.width);
+		let bullet_h = parseFloat(bullet.style.height);
+		console.log(`asteroid_x: ${asteroid_x} asteroid_y: ${asteroid_y} bullet_x: ${bullet_x} bullet_y: ${bullet_y}`);
+		console.log(`asteroid_w: ${asteroid_w} asteroid_h: ${asteroid_h} bullet_w: ${bullet_w} bullet_h: ${bullet_h}`);
+		return !(
+			((asteroid_y + asteroid_h) < (bullet_y)) ||
+			(asteroid_y > (bullet_y + bullet_h)) ||
+			((asteroid_x + asteroid_w) < bullet_x) ||
+			(asteroid_x > (bullet_x + bullet_w))
+		);
+	}
+
+
 
 	function gameLoop() {
 		angleCheck();
@@ -248,6 +278,7 @@ $(document).ready(function () {
 			velocityX *= game.DECELERATION;
 			velocityY *= game.DECELERATION;
 		}
+		collisionDetect();
 		updatePosition();
 		updateBullets();
 		updateAsteroids();
