@@ -13,6 +13,13 @@
 	position: absolute;
 }
 
+.asteroid {
+	width: 150px;
+	height: 150px;
+	transform: none;
+	position: absolute;
+}
+
 #splashscreen {
 	background-image: url('assets/cover.png');
 	height: 100%;
