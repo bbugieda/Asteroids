@@ -70,8 +70,8 @@ $(document).ready(function () {
 		let randomY = 0;
 
 		randomAngle = Math.floor(Math.random() * 361);
-		randomX = Math.floor(Math.random() * (game.SCREEN_WIDTH + 1));
-		randomY = Math.floor(Math.random() * (game.SCREEN_HEIGHT + 1));
+		randomX = -1 * Math.random(); //Math.floor(Math.random() * (game.SCREEN_WIDTH + 1));
+		randomY = -1 * Math.random(); //Math.floor(Math.random() * (game.SCREEN_HEIGHT + 1));
 
 		let asteroid_img = `<img id=${randomAngle} class='asteroid' src='assets/asteroid.png' style='left: ${randomX}px; top: ${randomY}px; width: ${100}px; height: ${100}px'>`
 		document.getElementById("asteroidListDiv").innerHTML += asteroid_img;
@@ -217,7 +217,7 @@ $(document).ready(function () {
 			for (let bullet of bList) {
 				if(isCollide(asteroid, bullet)){
 					asteroid.remove();
-					createAsteroid();
+					// createAsteroid();
 				}
 	}
 }
