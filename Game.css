@@ -29,11 +29,26 @@
 	background-size: cover;
 }
 
+#gameOver {
+	background-image: url('assets/GameOver.jpg');
+	height: 100%;
+	margin: 0px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	display: none;
+}
+
 #StartButton {
 	width: 10%;
 	left: 60%;
 	bottom: 20%;
 	position: absolute;
+}
+
+#gameLifesDiv {
+	height: 100%;
+	display: none;
 }
 
 html {

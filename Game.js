@@ -14,7 +14,7 @@ const direction = {
 const game = {
 	MAX_SPEED: 7,
 	ROTATE_ANGLE: 5,
-	DECELERATION: 0.98,
+	DECELERATION: 0.97,
 	SMOOTH_ACCELERATION_CONST: 0.05,
 	SHIP_HEIGHT: 100,
 	SHIP_WIDTH: 100,
@@ -30,6 +30,8 @@ $(document).ready(function () {
 		$(".spaceShip").show();
 		$("body").show();
 		createAsteroidList();
+		gameLifes();
+		$("#gameLifesDiv").show();
 	});
 
 	let keys = {}; //dictionary to keep track of key presses
@@ -51,12 +53,53 @@ $(document).ready(function () {
 	function resetShipPosition() {
 		ship.style.left = (game.SCREEN_WIDTH * 0.5) + "px";
 		ship.style.top = (game.SCREEN_HEIGHT * 0.5) + "px";
+		ship.style.width = 100 + "px";
+		ship.style.height = 100 + "px";
 	}
 
 	/**
 	 * populate the screen with asteroids
 	 * WHEN LAUNCH
 	 */
+
+	 function gameOver(){
+		$("#gameOver").show();
+		$(".spaceShip").hide();
+		$("#gameLifesDiv").hide();
+		$("#asteroidListDiv").hide();
+	 }
+
+	 let lifecount = 4;
+
+	function gameLifes(){
+		let lives_img1 = `<img id=${1} class='lifes' src='assets/life_full.png' style='left: ${50}px; top: ${50}px; width: ${30}px; height: ${30}px; padding: ${4}px'>`
+		document.getElementById("gameLifesDiv").innerHTML += lives_img1;
+		let lives_img2 = `<img id=${2} class='lifes' src='assets/life_full.png' style='left: ${50}px; top: ${50}px; width: ${30}px; height: ${30}px; padding: ${4}px'>`
+		document.getElementById("gameLifesDiv").innerHTML += lives_img2;
+		let lives_img3 = `<img id=${3} class='lifes' src='assets/life_full.png' style='left: ${50}px; top: ${50}px; width: ${30}px; height: ${30}px; padding: ${4}px'>`
+		document.getElementById("gameLifesDiv").innerHTML += lives_img3;
+		let lives_img4 = `<img id=${4} class='lifes' src='assets/life_full.png' style='left: ${50}px; top: ${50}px; width: ${30}px; height: ${30}px; padding: ${4}px'>`
+		document.getElementById("gameLifesDiv").innerHTML += lives_img4;
+	}
+
+	function updateGameLifes(){
+		let lifeList = document.getElementsByClassName("lifes");
+		for (let life of lifeList) {
+			if (lifecount == 3 && life.id == 4){
+				life.src= 'assets/life_empty.png';
+			}
+			if (lifecount == 2 && life.id == 3){
+				life.src= 'assets/life_empty.png';
+			}
+			if (lifecount == 1 && life.id == 2){
+				life.src= 'assets/life_empty.png';
+			}
+			if (lifecount == 0 && life.id == 1){
+				life.src= 'assets/life_empty.png';
+			}
+			
+	}
+}
 
 	function createAsteroidList() {
 		for (let i = 0; i < game.MAX_ASTEROID_CNT; i++) {
@@ -210,12 +253,12 @@ $(document).ready(function () {
 	/**
 	 * check if ship or bullets collides with asteroids
 	 */
-	function collisionDetect() {
+	function bulletCollisionDetect() {
 		let asteroidList = document.getElementsByClassName("asteroid");
 		for (let asteroid of asteroidList) {
 			let bList = document.getElementsByClassName("bullet");
 			for (let bullet of bList) {
-				if(isCollide(asteroid, bullet)){
+				if(bulletCollide(asteroid, bullet)){
 					var snd = new Audio("assets/Explosion.m4a");
 					snd.play();
 					asteroid.remove();
@@ -226,7 +269,7 @@ $(document).ready(function () {
 }
 	}
 
-	function isCollide(asteroid, bullet) {
+	function bulletCollide(asteroid, bullet) {
 		let asteroid_x = parseFloat(asteroid.style.left);
 		let asteroid_y = parseFloat(asteroid.style.top);
 		let asteroid_w = parseFloat(asteroid.style.width);
@@ -237,8 +280,8 @@ $(document).ready(function () {
 		let bullet_y = parseFloat(bullet.style.top);
 		let bullet_w = parseFloat(bullet.style.width);
 		let bullet_h = parseFloat(bullet.style.height);
-		console.log(`asteroid_x: ${asteroid_x} asteroid_y: ${asteroid_y} bullet_x: ${bullet_x} bullet_y: ${bullet_y}`);
-		console.log(`asteroid_w: ${asteroid_w} asteroid_h: ${asteroid_h} bullet_w: ${bullet_w} bullet_h: ${bullet_h}`);
+		// console.log(`asteroid_x: ${asteroid_x} asteroid_y: ${asteroid_y} bullet_x: ${bullet_x} bullet_y: ${bullet_y}`);
+		// console.log(`asteroid_w: ${asteroid_w} asteroid_h: ${asteroid_h} bullet_w: ${bullet_w} bullet_h: ${bullet_h}`);
 		return !(
 			((asteroid_y + asteroid_h) < (bullet_y)) ||
 			(asteroid_y > (bullet_y + bullet_h)) ||
@@ -246,6 +289,47 @@ $(document).ready(function () {
 			(asteroid_x > (bullet_x + bullet_w))
 		);
 	}
+
+
+
+	function shipCollisionDetect() {
+		let asteroidList = document.getElementsByClassName("asteroid");
+		for (let asteroid of asteroidList) {{
+				if(shipCollide(asteroid)){
+					var snd = new Audio("assets/Explosion.m4a");
+					snd.play();
+					asteroid.remove();
+					lifecount--;
+					var snd = new Audio("assets/Red-Alert.m4a");
+					snd.play();
+					// createAsteroid();
+				}
+	}
+}
+	}
+
+	function shipCollide(asteroid) {
+		let asteroid_x = parseFloat(asteroid.style.left);
+		let asteroid_y = parseFloat(asteroid.style.top);
+		let asteroid_w = parseFloat(asteroid.style.width);
+		asteroid_w -= 20;
+		let asteroid_h = parseFloat(asteroid.style.height);
+		asteroid_h -= 20;
+		let ship_x = parseFloat(ship.style.left);
+		let ship_y = parseFloat(ship.style.top);
+		let ship_w = parseFloat(ship.style.width);
+		let ship_h = parseFloat(ship.style.height);
+		// console.log(`asteroid_x: ${asteroid_x} asteroid_y: ${asteroid_y} bullet_x: ${bullet_x} bullet_y: ${bullet_y}`);
+		// console.log(`asteroid_w: ${asteroid_w} asteroid_h: ${asteroid_h} bullet_w: ${bullet_w} bullet_h: ${bullet_h}`);
+		return !(
+			((asteroid_y + asteroid_h) < (ship_y)) ||
+			(asteroid_y > (ship_y + ship_h)) ||
+			((asteroid_x + asteroid_w) < ship_x) ||
+			(asteroid_x > (ship_x + ship_w))
+		);
+	}
+
+
 
 
 
@@ -283,10 +367,17 @@ $(document).ready(function () {
 			velocityX *= game.DECELERATION;
 			velocityY *= game.DECELERATION;
 		}
-		collisionDetect();
+		
+		updateGameLifes();
+		shipCollisionDetect();
+		bulletCollisionDetect();
 		updatePosition();
 		updateBullets();
 		updateAsteroids();
+
+		if (lifecount == 0){
+			gameOver();
+		}
 		requestAnimationFrame(gameLoop);
 	}
 	gameLoop();
