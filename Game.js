@@ -33,6 +33,8 @@ $(document).ready(function () {
 		createAsteroidList();
 		gameLifes();
 		$("#gameLifesDiv").show();
+		//gameScore();
+		$("#gameScore").show();
 	});
 
 	let keys = {}; //dictionary to keep track of key presses
@@ -69,8 +71,11 @@ $(document).ready(function () {
 		$("#gameOver2").show();
 		$(".spaceShip").hide();
 		$("#gameLifesDiv").hide();
+		$("gameScore").hide();
 		$("#asteroidListDiv").hide();
 	 }
+
+
 
 	 let lifecount = 4;
 
@@ -253,9 +258,22 @@ $(document).ready(function () {
 		}
 	}
 
+
+
+	let GAME_SCORE = 0;
+	function updateScore(){
+		GAME_SCORE++;
+		//let lives_img1 = `<img id=${1} class='lifes' src='assets/life_full.png' style='left: ${50}px; top: ${50}px; width: ${30}px; height: ${30}px; padding: ${4}px'>`
+		document.getElementById("gameScore").innerHTML = "Score: " + GAME_SCORE;
+	}
+
+	
 	/**
 	 * check if ship or bullets collides with asteroids
 	 */
+
+
+
 	function bulletCollisionDetect() {
 		let asteroidList = document.getElementsByClassName("asteroid");
 		for (let asteroid of asteroidList) {
@@ -266,11 +284,14 @@ $(document).ready(function () {
 					snd.play();
 					asteroid.remove();
 					bullet.remove();
+					updateScore();
+
 					createAsteroid();
 				}
 	}
 }
 	}
+
 
 	function bulletCollide(asteroid, bullet) {
 		let asteroid_x = parseFloat(asteroid.style.left);
@@ -377,6 +398,7 @@ $(document).ready(function () {
 		updateGameLifes();
 		shipCollisionDetect();
 		bulletCollisionDetect();
+		//updateGameScore();
 		updatePosition();
 		updateBullets();
 		updateAsteroids();

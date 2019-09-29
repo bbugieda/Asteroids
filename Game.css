@@ -51,6 +51,22 @@
 	display: none;
 }
 
+#gameScore {
+	height: 100%;
+
+	font-family: gameOverFont;
+	display: none;
+	font-size: 30px;
+	color: antiquewhite;	
+	margin: 0;
+  	position: absolute;
+	top: 0;
+	right: 0;
+  	/* left: 50%;
+  	-ms-transform: translate(-50%, -50%);
+  	transform: translate(-50%, -50%); */
+}
+
 @font-face {
 	font-family: gameOverFont;
 	src: url(assets/ARCADECLASSIC.TTF);
