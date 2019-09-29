@@ -29,12 +29,82 @@
 	background-size: cover;
 }
 
+/* #gameOver {
+	background-image: url('assets/GameOver.gif');
+	height: 100%;
+	margin: 0px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	display: none;
+} */
+
 #StartButton {
 	width: 10%;
 	left: 60%;
 	bottom: 20%;
 	position: absolute;
 }
+
+#gameLifesDiv {
+	height: 100%;
+	display: none;
+}
+
+#gameScore {
+	height: 100%;
+
+	font-family: gameOverFont;
+	display: none;
+	font-size: 100px;
+	color: antiquewhite;	
+	margin: 0;
+  	position: absolute;
+	top: 0;
+	right: 0;
+  	/* left: 50%;
+  	-ms-transform: translate(-50%, -50%);
+  	transform: translate(-50%, -50%); */
+}
+
+@font-face {
+	font-family: gameOverFont;
+	src: url(assets/ARCADECLASSIC.TTF);
+  }
+  
+  #gameOver {
+	animation:blinkingText 0.8s infinite;
+	font-family: gameOverFont;
+	display: none;
+	font-size: 150px;
+	color: antiquewhite;	
+	margin: 0;
+  	position: absolute;
+  	top: 50%;
+  	left: 50%;
+  	-ms-transform: translate(-50%, -50%);
+  	transform: translate(-50%, -50%);
+  }
+  @keyframes blinkingText{
+	0%{		color: antiquewhite;	}
+	49%{	color: antiquewhite;	}
+	50%{	color: transparent;	}
+	99%{	color:transparent;	}
+	100%{	color: antiquewhite;	}
+}
+
+  #gameOver2 {
+	font-family: 'Courier New', Courier, monospace;
+	display: none;
+	font-size: 30px;
+	color: antiquewhite;	
+	margin-top: 70px;
+  	position: absolute;
+  	top: 50%;
+  	left: 50%;
+  	-ms-transform: translate(-50%, -50%);
+  	transform: translate(-50%, -50%);
+  }
 
 html {
 	height: 100%;
@@ -48,12 +118,6 @@ body{
 	margin:0;
 	overflow: unset;
 
-}
-#score {
-	font-family: 'Fjalla One', sans-serif;
-	font-size: 6em;
-	color: #4F5A6D;
-	padding: 10px 50px;  
 }
 
 

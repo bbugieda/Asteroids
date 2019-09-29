@@ -6,6 +6,7 @@ const direction = {
 	RIGHT: 39,
 	UP: 38,
 	SPACE: 32,
+	RESTART: 82
 }
 
 let SMALL_ASTEROID_SIZE = 30;
@@ -17,33 +18,40 @@ let LARGE_ASTEROID_SIZE = 100;
 const game = {
 	MAX_SPEED: 7,
 	ROTATE_ANGLE: 5,
-	DECELERATION: 0.98,
+	DECELERATION: 0.97,
 	SMOOTH_ACCELERATION_CONST: 0.05,
 	SHIP_HEIGHT: 100,
 	SHIP_WIDTH: 100,
-	MAX_ASTEROID_CNT: 10,
+	MAX_ASTEROID_CNT: 7,
 	SCREEN_WIDTH: screen.width,
 	SCREEN_HEIGHT: screen.height,
 }
+
+let gameStart = false;
 
 $(document).ready(function () {
 	unloadScrollBars();
 	$("#StartButton").click(function () {
 		$("#splashscreen").fadeOut(1000);
+		gameStart = true;
 		$(".spaceShip").show();
 		$("body").show();
 		createAsteroidList();
+		gameLifes();
+		$("#gameLifesDiv").show();
+		//gameScore();
+		$("#gameScore").show();
 	});
 
 	let keys = {}; //dictionary to keep track of key presses
 	document.addEventListener("keydown", function (event) {
-		if (event.keyCode == direction.RIGHT || event.keyCode == direction.LEFT || event.keyCode == direction.SPACE || event.keyCode == direction.UP) {
+		if (event.keyCode == direction.RIGHT || event.keyCode == direction.LEFT || event.keyCode == direction.SPACE || event.keyCode == direction.UP || event.keyCode == direction.RESTART) {
 			keys[event.keyCode] = true;
 		}
 	});
 
 	document.addEventListener("keyup", function (event) {
-		if (event.keyCode == direction.RIGHT || event.keyCode == direction.LEFT || event.keyCode == direction.SPACE || event.keyCode == direction.UP) {
+		if (event.keyCode == direction.RIGHT || event.keyCode == direction.LEFT || event.keyCode == direction.SPACE || event.keyCode == direction.UP || event.keyCode == direction.RESTART) {
 			keys[event.keyCode] = false;
 		}
 	});
@@ -54,12 +62,59 @@ $(document).ready(function () {
 	function resetShipPosition() {
 		ship.style.left = (game.SCREEN_WIDTH * 0.5) + "px";
 		ship.style.top = (game.SCREEN_HEIGHT * 0.5) + "px";
+		ship.style.width = 100 + "px";
+		ship.style.height = 100 + "px";
 	}
 
 	/**
 	 * populate the screen with asteroids
 	 * WHEN LAUNCH
 	 */
+	var gameRestart = false;
+	function gameOver() {
+		gameStart = false;
+		gameRestart = true;
+		$("#gameOver").show();
+		$("#gameOver2").show();
+		$(".spaceShip").hide();
+		$("#gameLifesDiv").hide();
+		$("gameScore").hide();
+		$("#asteroidListDiv").hide();
+	}
+
+
+
+	let lifecount = 4;
+
+	function gameLifes() {
+		let lives_img1 = `<img id=${1} class='lifes' src='assets/life_full.png' style='left: ${50}px; top: ${50}px; width: ${30}px; height: ${30}px; padding: ${4}px'>`
+		document.getElementById("gameLifesDiv").innerHTML += lives_img1;
+		let lives_img2 = `<img id=${2} class='lifes' src='assets/life_full.png' style='left: ${50}px; top: ${50}px; width: ${30}px; height: ${30}px; padding: ${4}px'>`
+		document.getElementById("gameLifesDiv").innerHTML += lives_img2;
+		let lives_img3 = `<img id=${3} class='lifes' src='assets/life_full.png' style='left: ${50}px; top: ${50}px; width: ${30}px; height: ${30}px; padding: ${4}px'>`
+		document.getElementById("gameLifesDiv").innerHTML += lives_img3;
+		let lives_img4 = `<img id=${4} class='lifes' src='assets/life_full.png' style='left: ${50}px; top: ${50}px; width: ${30}px; height: ${30}px; padding: ${4}px'>`
+		document.getElementById("gameLifesDiv").innerHTML += lives_img4;
+	}
+
+	function updateGameLifes() {
+		let lifeList = document.getElementsByClassName("lifes");
+		for (let life of lifeList) {
+			if (lifecount == 3 && life.id == 4) {
+				life.src = 'assets/life_empty.png';
+			}
+			if (lifecount == 2 && life.id == 3) {
+				life.src = 'assets/life_empty.png';
+			}
+			if (lifecount == 1 && life.id == 2) {
+				life.src = 'assets/life_empty.png';
+			}
+			if (lifecount == 0 && life.id == 1) {
+				life.src = 'assets/life_empty.png';
+			}
+
+		}
+	}
 
 	function createAsteroidList() {
 		for (let i = 0; i < game.MAX_ASTEROID_CNT; i++) {
@@ -90,7 +145,7 @@ $(document).ready(function () {
 		let randomAngle = Math.floor(Math.random() * 361);
 		let divList = "";
 
-		if(SIZE == LARGE_ASTEROID_SIZE){
+		if (SIZE == LARGE_ASTEROID_SIZE) {
 			divList = "asteroidListDiv";
 		} else {
 			divList = "smallAsteroidListDiv"
@@ -125,7 +180,7 @@ $(document).ready(function () {
 		let yloc = parseFloat(ship.style.top);
 
 		if (xloc > game.SCREEN_WIDTH) {
-			ship.style.left = -game.SCREEN_WIDTH + "px";
+			ship.style.left = -game.SHIP_WIDTH + "px";
 		} else if (xloc < -game.SHIP_WIDTH) {
 			ship.style.left = game.SCREEN_WIDTH + "px";
 		}
@@ -240,106 +295,185 @@ $(document).ready(function () {
 		}
 	}
 
+
+
+	let GAME_SCORE = 0;
+	function updateScore() {
+		GAME_SCORE++;
+		//let lives_img1 = `<img id=${1} class='lifes' src='assets/life_full.png' style='left: ${50}px; top: ${50}px; width: ${30}px; height: ${30}px; padding: ${4}px'>`
+		document.getElementById("gameScore").innerHTML = "Score: " + GAME_SCORE;
+	}
+
+
 	/**
 	 * check if ship or bullets collides with asteroids.
 	 * If larger asteroid is hit, it will break into three smaller ones.
 	 */
-	function collisionDetect() {
+
+	function bulletCollisionDetect() {
 		let asteroidList = document.getElementsByClassName("asteroid");
 		for (let asteroid of asteroidList) {
 			let bList = document.getElementsByClassName("bullet");
 			for (let bullet of bList) {
-				if (isCollide(asteroid, bullet)) {
+				if (bulletCollide(asteroid, bullet)) {
 					// checks the pixel size for the asteroid image (either SMALL or LARGE size)
 					let xPos = asteroid.width;
 					let yPos = asteroid.height;
+					var snd = new Audio("assets/Explosion.m4a");
+					snd.play();
+					asteroid.remove();
+					bullet.remove();
+					updateScore();
+					createLargeAsteroid();
+
 
 					asteroid.remove();
 
 					// if the bullet hits a large asteroid, create three smaller ones in its place
-					if(xPos == LARGE_ASTEROID_SIZE && yPos == LARGE_ASTEROID_SIZE) {
+					if (xPos == LARGE_ASTEROID_SIZE && yPos == LARGE_ASTEROID_SIZE) {
 						// grabs the x and y location of the large asteroid
 						let asteroid_x = parseFloat(asteroid.style.left);
 						let asteroid_y = parseFloat(asteroid.style.top);
 
 						splitInto3Asteroids(asteroid_x, asteroid_y);
 					}
+					// if(bulletCollide(asteroid, bullet)){
+					// 	var snd = new Audio("assets/Explosion.m4a");
+					// 	snd.play();
+					// 	asteroid.remove();
+					// 	bullet.remove();
+					// 	updateScore();
+
+					// 	createAsteroid();
+					// }
 				}
 			}
 		}
 	}
 
-	/**
-	 * splitInto3Asteroids()
-	 * Creates 3 smaller asteroids at the current x and y position of the larger 
-	 * asteroid that was hit with a bullet
-	 */
-	function splitInto3Asteroids(x, y) {
-		createSmallAsteroid(x, y);
-		createSmallAsteroid(x, y);
-		createSmallAsteroid(x, y);
-	}
-
-	function isCollide(asteroid, bullet) {
-		let asteroid_x = parseFloat(asteroid.style.left);
-		let asteroid_y = parseFloat(asteroid.style.top);
-		let asteroid_w = parseFloat(asteroid.style.width);
-		let asteroid_h = parseFloat(asteroid.style.height);
-		let bullet_x = parseFloat(bullet.style.left);
-		let bullet_y = parseFloat(bullet.style.top);
-		let bullet_w = parseFloat(bullet.style.width);
-		let bullet_h = parseFloat(bullet.style.height);
-		console.log(`asteroid_x: ${asteroid_x} asteroid_y: ${asteroid_y} bullet_x: ${bullet_x} bullet_y: ${bullet_y}`);
-		console.log(`asteroid_w: ${asteroid_w} asteroid_h: ${asteroid_h} bullet_w: ${bullet_w} bullet_h: ${bullet_h}`);
-		return !(
-			((asteroid_y + asteroid_h) < (bullet_y)) ||
-			(asteroid_y > (bullet_y + bullet_h)) ||
-			((asteroid_x + asteroid_w) < bullet_x) ||
-			(asteroid_x > (bullet_x + bullet_w))
-		);
-	}
-
-
-
-	function gameLoop() {
-		angleCheck();
-		areaCheck();
-
-		if (keys[direction.RIGHT]) {
-			angle = angle + game.ROTATE_ANGLE;
-			ship.style.transform = "rotate(" + angle + "deg)";
+		/**
+		 * splitInto3Asteroids()
+		 * Creates 3 smaller asteroids at the current x and y position of the larger 
+		 * asteroid that was hit with a bullet
+		 */
+		function splitInto3Asteroids(x, y) {
+			createSmallAsteroid(x, y);
+			createSmallAsteroid(x, y);
+			createSmallAsteroid(x, y);
 		}
-		if (keys[direction.LEFT]) {
-			angle = angle - game.ROTATE_ANGLE;
-			ship.style.transform = "rotate(" + angle + "deg)";
+
+
+		function bulletCollide(asteroid, bullet) {
+			let asteroid_x = parseFloat(asteroid.style.left);
+			let asteroid_y = parseFloat(asteroid.style.top);
+			let asteroid_w = parseFloat(asteroid.style.width);
+			asteroid_w -= 20;
+			let asteroid_h = parseFloat(asteroid.style.height);
+			asteroid_h -= 20;
+			let bullet_x = parseFloat(bullet.style.left);
+			let bullet_y = parseFloat(bullet.style.top);
+			let bullet_w = parseFloat(bullet.style.width);
+			let bullet_h = parseFloat(bullet.style.height);
+			// console.log(`asteroid_x: ${asteroid_x} asteroid_y: ${asteroid_y} bullet_x: ${bullet_x} bullet_y: ${bullet_y}`);
+			// console.log(`asteroid_w: ${asteroid_w} asteroid_h: ${asteroid_h} bullet_w: ${bullet_w} bullet_h: ${bullet_h}`);
+			return !(
+				((asteroid_y + asteroid_h) < (bullet_y)) ||
+				(asteroid_y > (bullet_y + bullet_h)) ||
+				((asteroid_x + asteroid_w) < bullet_x) ||
+				(asteroid_x > (bullet_x + bullet_w))
+			);
 		}
-		if (keys[direction.SPACE]) {
-			if (!locked) {
-				locked = true;
-				var snd = new Audio("assets/Blast.mp3");
-				snd.play();
-				let xloc = parseFloat(ship.style.left);
-				let yloc = parseFloat(ship.style.top);
-				fireBullet(xloc, yloc, angle);
-				setTimeout(function () {
-					locked = false;
-				}, 250);
+
+
+
+		function shipCollisionDetect() {
+			let asteroidList = document.getElementsByClassName("asteroid");
+			for (let asteroid of asteroidList) {
+				if (shipCollide(asteroid)) {
+					var snd = new Audio("assets/Explosion.m4a");
+					snd.play();
+					asteroid.remove();
+					lifecount--;
+					var snd = new Audio("assets/Red-Alert.m4a");
+					snd.play();
+					// createAsteroid();
+				}
 			}
 		}
-		if (keys[direction.UP]) {
-			accelerationX = game.SMOOTH_ACCELERATION_CONST * Math.cos(4.8 + (angle * Math.PI) / 180);
-			accelerationY = game.SMOOTH_ACCELERATION_CONST * Math.sin(4.8 + (angle * Math.PI) / 180);
+
+		function shipCollide(asteroid) {
+			let asteroid_x = parseFloat(asteroid.style.left);
+			let asteroid_y = parseFloat(asteroid.style.top);
+			let asteroid_w = parseFloat(asteroid.style.width);
+			asteroid_w -= 20;
+			let asteroid_h = parseFloat(asteroid.style.height);
+			asteroid_h -= 20;
+			let ship_x = parseFloat(ship.style.left);
+			let ship_y = parseFloat(ship.style.top);
+			let ship_w = parseFloat(ship.style.width);
+			let ship_h = parseFloat(ship.style.height);
+			// console.log(`asteroid_x: ${asteroid_x} asteroid_y: ${asteroid_y} bullet_x: ${bullet_x} bullet_y: ${bullet_y}`);
+			// console.log(`asteroid_w: ${asteroid_w} asteroid_h: ${asteroid_h} bullet_w: ${bullet_w} bullet_h: ${bullet_h}`);
+			return !(
+				((asteroid_y + asteroid_h) < (ship_y)) ||
+				(asteroid_y > (ship_y + ship_h)) ||
+				((asteroid_x + asteroid_w) < ship_x) ||
+				(asteroid_x > (ship_x + ship_w))
+			);
 		}
-		if (!keys[direction.UP]) {
-			// deceleration
-			velocityX *= game.DECELERATION;
-			velocityY *= game.DECELERATION;
+
+		function gameLoop() {
+			angleCheck();
+			areaCheck();
+
+			if (keys[direction.RIGHT] && !gameRestart) {
+				angle = angle + game.ROTATE_ANGLE;
+				ship.style.transform = "rotate(" + angle + "deg)";
+			}
+			if (keys[direction.LEFT] && !gameRestart) {
+				angle = angle - game.ROTATE_ANGLE;
+				ship.style.transform = "rotate(" + angle + "deg)";
+			}
+			if (keys[direction.SPACE] && gameStart && !gameRestart) {
+				if (!locked) {
+					locked = true;
+					var snd = new Audio("assets/Blast.mp3");
+					snd.play();
+					let xloc = parseFloat(ship.style.left);
+					let yloc = parseFloat(ship.style.top);
+					fireBullet(xloc, yloc, angle);
+					setTimeout(function () {
+						locked = false;
+					}, 250);
+				}
+			}
+			if (keys[direction.UP] && !gameRestart) {
+				accelerationX = game.SMOOTH_ACCELERATION_CONST * Math.cos(4.8 + (angle * Math.PI) / 180);
+				accelerationY = game.SMOOTH_ACCELERATION_CONST * Math.sin(4.8 + (angle * Math.PI) / 180);
+			}
+			if (!keys[direction.UP] && !gameRestart) {
+				// deceleration
+				velocityX *= game.DECELERATION;
+				velocityY *= game.DECELERATION;
+			}
+			if (keys[direction.RESTART] && gameRestart) {
+				location.reload();
+			}
+
+			updateGameLifes();
+			shipCollisionDetect();
+			bulletCollisionDetect();
+			//updateGameScore();
+			updatePosition();
+			updateBullets();
+			updateAsteroids();
+
+			if (lifecount == 0) {
+				gameOver();
+			}
+			requestAnimationFrame(gameLoop);
 		}
-		collisionDetect();
-		updatePosition();
-		updateBullets();
-		updateAsteroids();
-		requestAnimationFrame(gameLoop);
-	}
-	gameLoop();
-});
+		gameLoop();
+	});
+
+	
