@@ -384,18 +384,18 @@ $(document).ready(function () {
 			);
 		}
 
-
-
+		var exp = new Audio("assets/Explosion.m4a");
+		var redAlert = new Audio("assets/Red-Alert.m4a");
 		function shipCollisionDetect() {
 			let asteroidList = document.getElementsByClassName("asteroid");
 			for (let asteroid of asteroidList) {
 				if (shipCollide(asteroid)) {
-					var snd = new Audio("assets/Explosion.m4a");
-					snd.play();
+					// var exp = new Audio("assets/Explosion.m4a");
+					exp.play();
 					asteroid.remove();
 					lifecount--;
-					var snd = new Audio("assets/Red-Alert.m4a");
-					snd.play();
+					// var redAlert = new Audio("assets/Red-Alert.m4a");
+					redAlert.play();
 					// createAsteroid();
 				}
 			}
