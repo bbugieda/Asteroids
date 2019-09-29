@@ -8,6 +8,9 @@ const direction = {
 	SPACE: 32,
 }
 
+let SMALL_ASTEROID_SIZE = 30;
+let LARGE_ASTEROID_SIZE = 100;
+
 /**
  * Enums for game settings
  */
@@ -60,19 +63,19 @@ $(document).ready(function () {
 
 	function createAsteroidList() {
 		for (let i = 0; i < game.MAX_ASTEROID_CNT; i++) {
-			createAsteroid();
+			createLargeAsteroid();
 		}
 	}
 
 	/**
-	 * createAsteroid()
+	 * createLargeAsteroid()
 	 * Creates a large asteroid at a random x and y position
 	 * Create a random angle for the asteroid to move
 	 */
-	function createAsteroid() {
+	function createLargeAsteroid() {
 		let randomX = 0;
 		let randomY = 0;
-		let LARGE_ASTEROID_SIZE = 30;
+		//let LARGE_ASTEROID_SIZE = 100;
 
 		randomX = Math.floor(Math.random() * (game.SCREEN_WIDTH + 1));
 		randomY = Math.floor(Math.random() * (game.SCREEN_HEIGHT + 1));
@@ -84,13 +87,14 @@ $(document).ready(function () {
 	}
 
 	/**
-	 * createAsteroid(x, y)
+	 * createAsteroid(x, y, SIZE)
 	 * Creates an asteroid at the specified x and y location and provides a random angle
 	 * @param {number} x 
 	 * @param {number} y 
+	 * @param {number} SIZE
 	 */
 	function createAsteroid(x, y, SIZE) {
-		let randomAngle = randomAngle = Math.floor(Math.random() * 361);
+		let randomAngle = Math.floor(Math.random() * 361);
 
 		let asteroid_img = `<img id=${randomAngle} class='asteroid' src='assets/asteroid.png' style='left: ${x}px; top: ${y}px; width: ${SIZE}px; height: ${SIZE}px'>`
 		document.getElementById("asteroidListDiv").innerHTML += asteroid_img;
@@ -103,15 +107,15 @@ $(document).ready(function () {
 	 * @param {number} y 
 	 */
 	function createSmallAsteroid(x, y) {
-		let randomAngle = 0;
-		let SMALL_ASTEROID_SIZE = 30;
+		//let randomAngle = 0;
+		//let SMALL_ASTEROID_SIZE = 30;
 
-		randomAngle = Math.floor(Math.random() * 361);
+		//randomAngle = Math.floor(Math.random() * 361);
 
 		createAsteroid(x, y, SMALL_ASTEROID_SIZE);
 
-		let asteroid_img = `<img id=${randomAngle} class='asteroid' src='assets/asteroid.png' style='left: ${x}px; top: ${y}px; width: ${SMALL_ASTEROID_SIZE}px; height: ${SMALL_ASTEROID_SIZE}px'>`
-		document.getElementById("asteroidListDiv").innerHTML += asteroid_img;
+		//let asteroid_img = `<img id=${randomAngle} class='asteroid' src='assets/asteroid.png' style='left: ${x}px; top: ${y}px; width: ${SMALL_ASTEROID_SIZE}px; height: ${SMALL_ASTEROID_SIZE}px'>`
+		//document.getElementById("asteroidListDiv").innerHTML += asteroid_img;
 	}
 
 	let angle = 0;
@@ -252,18 +256,23 @@ $(document).ready(function () {
 		for (let asteroid of asteroidList) {
 			let bList = document.getElementsByClassName("bullet");
 			for (let bullet of bList) {
-				if(isCollide(asteroid, bullet)) {
-					if (isCollide(asteroid, bullet)) {
-						let xPos = asteroid.x;
-						let yPos = asteroid.y;
-						asteroid.remove();
-	
-						// breaks asteroid into 3 separate small asteroids
-						splitInto3Asteroids(xPos, yPos);
-						
-						// creates one larger asteroid offscreen
-						createAsteroid();
+				if (isCollide(asteroid, bullet)) {
+					let xPos = asteroid.width;
+					let yPos = asteroid.height;
+
+					let asteroid_x = parseFloat(asteroid.style.left);
+					let asteroid_y = parseFloat(asteroid.style.top);
+
+					asteroid.remove();
+					// breaks asteroid into 3 separate small asteroids
+
+					// if the bullet hits a large asteroid, create three smaller ones in its place
+					if(xPos == LARGE_ASTEROID_SIZE && yPos == LARGE_ASTEROID_SIZE) {
+						splitInto3Asteroids(asteroid_x, asteroid_y);
 					}
+						
+					// creates one larger asteroid offscreen
+					//createLargeAsteroid();
 				}
 			}
 		}
@@ -281,6 +290,8 @@ $(document).ready(function () {
 		let small1 = createSmallAsteroid(x, y);
 		let small2 = createSmallAsteroid(x, y);
 		let small3 = createSmallAsteroid(x, y);
+
+		
 	}
 
 	function isCollide(asteroid, bullet) {
