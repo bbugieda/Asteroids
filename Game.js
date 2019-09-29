@@ -340,15 +340,15 @@ $(document).ready(function () {
 		angleCheck();
 		areaCheck();
 
-		if (keys[direction.RIGHT]) {
+		if (keys[direction.RIGHT] && !gameRestart) {
 			angle = angle + game.ROTATE_ANGLE;
 			ship.style.transform = "rotate(" + angle + "deg)";
 		}
-		if (keys[direction.LEFT]) {
+		if (keys[direction.LEFT] && !gameRestart) {
 			angle = angle - game.ROTATE_ANGLE;
 			ship.style.transform = "rotate(" + angle + "deg)";
 		}
-		if (keys[direction.SPACE]) {
+		if (keys[direction.SPACE] && !gameRestart) {
 			if (!locked) {
 				locked = true;
 				var snd = new Audio("assets/Blast.mp3");
@@ -361,11 +361,11 @@ $(document).ready(function () {
 				}, 250);
 			}
 		}
-		if (keys[direction.UP]) {
+		if (keys[direction.UP] && !gameRestart) {
 			accelerationX = game.SMOOTH_ACCELERATION_CONST * Math.cos(4.8 + (angle * Math.PI) / 180);
 			accelerationY = game.SMOOTH_ACCELERATION_CONST * Math.sin(4.8 + (angle * Math.PI) / 180);
 		}
-		if (!keys[direction.UP]) {
+		if (!keys[direction.UP] && !gameRestart) {
 			// deceleration
 			velocityX *= game.DECELERATION;
 			velocityY *= game.DECELERATION;
