@@ -24,10 +24,13 @@ const game = {
 	SCREEN_HEIGHT: screen.height,
 }
 
+let gameStart = false;
+
 $(document).ready(function () {
 	unloadScrollBars();
 	$("#StartButton").click(function () {
 		$("#splashscreen").fadeOut(1000);
+		gameStart = true;
 		$(".spaceShip").show();
 		$("body").show();
 		createAsteroidList();
@@ -66,7 +69,8 @@ $(document).ready(function () {
 	 */
 	 var gameRestart = false;
 	 function gameOver(){
-		 gameRestart = true;
+		gameStart = false;
+		gameRestart = true;
 		$("#gameOver").show();
 		$("#gameOver2").show();
 		$(".spaceShip").hide();
@@ -369,7 +373,7 @@ $(document).ready(function () {
 			angle = angle - game.ROTATE_ANGLE;
 			ship.style.transform = "rotate(" + angle + "deg)";
 		}
-		if (keys[direction.SPACE] && !gameRestart) {
+		if (keys[direction.SPACE] && gameStart && !gameRestart) {
 			if (!locked) {
 				locked = true;
 				var snd = new Audio("assets/Blast.mp3");
