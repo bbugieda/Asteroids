@@ -6,6 +6,7 @@ const direction = {
 	RIGHT: 39,
 	UP: 38,
 	SPACE: 32,
+	RESTART: 82
 }
 
 /**
@@ -18,7 +19,7 @@ const game = {
 	SMOOTH_ACCELERATION_CONST: 0.05,
 	SHIP_HEIGHT: 100,
 	SHIP_WIDTH: 100,
-	MAX_ASTEROID_CNT: 10,
+	MAX_ASTEROID_CNT: 7,
 	SCREEN_WIDTH: screen.width,
 	SCREEN_HEIGHT: screen.height,
 }
@@ -36,13 +37,13 @@ $(document).ready(function () {
 
 	let keys = {}; //dictionary to keep track of key presses
 	document.addEventListener("keydown", function (event) {
-		if (event.keyCode == direction.RIGHT || event.keyCode == direction.LEFT || event.keyCode == direction.SPACE || event.keyCode == direction.UP) {
+		if (event.keyCode == direction.RIGHT || event.keyCode == direction.LEFT || event.keyCode == direction.SPACE || event.keyCode == direction.UP || event.keyCode == direction.RESTART) {
 			keys[event.keyCode] = true;
 		}
 	});
 
 	document.addEventListener("keyup", function (event) {
-		if (event.keyCode == direction.RIGHT || event.keyCode == direction.LEFT || event.keyCode == direction.SPACE || event.keyCode == direction.UP) {
+		if (event.keyCode == direction.RIGHT || event.keyCode == direction.LEFT || event.keyCode == direction.SPACE || event.keyCode == direction.UP || event.keyCode == direction.RESTART) {
 			keys[event.keyCode] = false;
 		}
 	});
@@ -61,9 +62,11 @@ $(document).ready(function () {
 	 * populate the screen with asteroids
 	 * WHEN LAUNCH
 	 */
-
+	 var gameRestart = false;
 	 function gameOver(){
+		 gameRestart = true;
 		$("#gameOver").show();
+		$("#gameOver2").show();
 		$(".spaceShip").hide();
 		$("#gameLifesDiv").hide();
 		$("#asteroidListDiv").hide();
@@ -263,7 +266,7 @@ $(document).ready(function () {
 					snd.play();
 					asteroid.remove();
 					bullet.remove();
-					// createAsteroid();
+					createAsteroid();
 				}
 	}
 }
@@ -367,6 +370,9 @@ $(document).ready(function () {
 			velocityX *= game.DECELERATION;
 			velocityY *= game.DECELERATION;
 		}
+		if (keys[direction.RESTART] && gameRestart) {
+			location.reload();
+		}
 		
 		updateGameLifes();
 		shipCollisionDetect();
@@ -379,6 +385,7 @@ $(document).ready(function () {
 			gameOver();
 		}
 		requestAnimationFrame(gameLoop);
+		
 	}
 	gameLoop();
 });

@@ -29,15 +29,15 @@
 	background-size: cover;
 }
 
-#gameOver {
-	background-image: url('assets/GameOver.jpg');
+/* #gameOver {
+	background-image: url('assets/GameOver.gif');
 	height: 100%;
 	margin: 0px;
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: contain;
 	display: none;
-}
+} */
 
 #StartButton {
 	width: 10%;
@@ -50,6 +50,45 @@
 	height: 100%;
 	display: none;
 }
+
+@font-face {
+	font-family: gameOverFont;
+	src: url(assets/ARCADECLASSIC.TTF);
+  }
+  
+  #gameOver {
+	animation:blinkingText 0.8s infinite;
+	font-family: gameOverFont;
+	display: none;
+	font-size: 150px;
+	color: antiquewhite;	
+	margin: 0;
+  	position: absolute;
+  	top: 50%;
+  	left: 50%;
+  	-ms-transform: translate(-50%, -50%);
+  	transform: translate(-50%, -50%);
+  }
+  @keyframes blinkingText{
+	0%{		color: antiquewhite;	}
+	49%{	color: antiquewhite;	}
+	50%{	color: transparent;	}
+	99%{	color:transparent;	}
+	100%{	color: antiquewhite;	}
+}
+
+  #gameOver2 {
+	font-family: 'Courier New', Courier, monospace;
+	display: none;
+	font-size: 30px;
+	color: antiquewhite;	
+	margin-top: 70px;
+  	position: absolute;
+  	top: 50%;
+  	left: 50%;
+  	-ms-transform: translate(-50%, -50%);
+  	transform: translate(-50%, -50%);
+  }
 
 html {
 	height: 100%;
