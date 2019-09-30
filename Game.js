@@ -9,7 +9,7 @@ const direction = {
 	RESTART: 82
 }
 
-let SMALL_ASTEROID_SIZE = 30;
+let SMALL_ASTEROID_SIZE = 50;
 let LARGE_ASTEROID_SIZE = 100;
 
 /**
@@ -389,7 +389,7 @@ $(document).ready(function () {
 		}
 
 		var exp = new Audio("assets/Explosion.m4a");
-		var redAlert = new Audio("assets/Red-Alert.m4a");
+		var redAlert = new Audio("assets/ShortRedAlert.m4a");
 		function shipCollisionDetect() {
 			let asteroidList = document.getElementsByClassName("asteroid");
 			for (let asteroid of asteroidList) {
