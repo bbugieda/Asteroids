@@ -22,7 +22,7 @@ const game = {
 	SMOOTH_ACCELERATION_CONST: 0.05,
 	SHIP_HEIGHT: 100,
 	SHIP_WIDTH: 100,
-	MAX_ASTEROID_CNT: 2,
+	MAX_ASTEROID_CNT: 4,
 	SCREEN_WIDTH: screen.width,
 	SCREEN_HEIGHT: screen.height,
 }
@@ -312,8 +312,10 @@ $(document).ready(function () {
 	 */
 
 	function bulletCollisionDetect() {
+		let count = 0;
 		let asteroidList = document.getElementsByClassName("asteroid");
 		for (let asteroid of asteroidList) {
+			count++;
 			let bList = document.getElementsByClassName("bullet");
 			for (let bullet of bList) {
 				if (bulletCollide(asteroid, bullet)) {
@@ -326,10 +328,10 @@ $(document).ready(function () {
 					bullet.remove();
 					updateScore();
 					
-					createLargeAsteroid(); //is being called too many times, causes game to lag
-					
+					if (count < 5) {
+						createLargeAsteroid(); //is being called too many times, causes game to lag
+					}
 					asteroid.remove();
-					console.log(asteroidList.length)
 
 					// if the bullet hits a large asteroid, create three smaller ones in its place
 					if (xPos == LARGE_ASTEROID_SIZE && yPos == LARGE_ASTEROID_SIZE) {
@@ -394,7 +396,12 @@ $(document).ready(function () {
 				if (shipCollide(asteroid)) {
 					// var exp = new Audio("assets/Explosion.m4a");
 					exp.play();
+					let asteroid_x = parseFloat(asteroid.style.left);
+					let asteroid_y = parseFloat(asteroid.style.top);
 					asteroid.remove();
+					// if (asteroid.SIZE = LARGE_ASTEROID_SIZE) {
+					// 	splitInto3Asteroids(asteroid_x, asteroid_y);
+					// }
 					lifecount--;
 					// var redAlert = new Audio("assets/Red-Alert.m4a");
 					redAlert.play();
