@@ -22,7 +22,7 @@ const game = {
 	SMOOTH_ACCELERATION_CONST: 0.05,
 	SHIP_HEIGHT: 100,
 	SHIP_WIDTH: 100,
-	MAX_ASTEROID_CNT: 7,
+	MAX_ASTEROID_CNT: 2,
 	SCREEN_WIDTH: screen.width,
 	SCREEN_HEIGHT: screen.height,
 }
@@ -128,8 +128,8 @@ $(document).ready(function () {
 	 * Create a random angle for the asteroid to move
 	 */
 	function createLargeAsteroid() {
-		let randomX = Math.floor(Math.random() * (game.SCREEN_WIDTH + 1));
-		let randomY = Math.floor(Math.random() * (game.SCREEN_HEIGHT + 1));
+		let randomX = Math.floor(Math.random() * -(game.SCREEN_WIDTH + 1));
+		let randomY = Math.floor(Math.random() * -(game.SCREEN_HEIGHT + 1));
 
 		createAsteroid(randomX, randomY, LARGE_ASTEROID_SIZE);
 	}
@@ -153,6 +153,7 @@ $(document).ready(function () {
 
 		let asteroid_img = `<img id=${randomAngle} class='asteroid' src='assets/asteroid.png' style='left: ${x}px; top: ${y}px; width: ${SIZE}px; height: ${SIZE}px'>`
 		document.getElementById(divList).innerHTML += asteroid_img;
+	
 	}
 
 	/**
@@ -324,10 +325,11 @@ $(document).ready(function () {
 					asteroid.remove();
 					bullet.remove();
 					updateScore();
-					createLargeAsteroid();
-
-
+					
+					createLargeAsteroid(); //is being called too many times, causes game to lag
+					
 					asteroid.remove();
+					console.log(asteroidList.length)
 
 					// if the bullet hits a large asteroid, create three smaller ones in its place
 					if (xPos == LARGE_ASTEROID_SIZE && yPos == LARGE_ASTEROID_SIZE) {
