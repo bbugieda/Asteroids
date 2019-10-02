@@ -11,6 +11,7 @@ const direction = {
 
 let SMALL_ASTEROID_SIZE = 50;
 let LARGE_ASTEROID_SIZE = 100;
+let TOTAL_ASTEROID_CNT = 0;
 
 /**
  * Enums for game settings
@@ -127,7 +128,9 @@ $(document).ready(function() {
 
   function createAsteroidList() {
     for (let i = 0; i < game.MAX_ASTEROID_CNT; i++) {
-      createLargeAsteroid();
+      if (TOTAL_ASTEROID_CNT < 7) {
+        createLargeAsteroid();
+      }
     }
   }
 
@@ -162,6 +165,7 @@ $(document).ready(function() {
 
     let asteroid_img = `<img id=${randomAngle} class='asteroid' src='assets/asteroid.png' style='left: ${x}px; top: ${y}px; width: ${SIZE}px; height: ${SIZE}px'>`;
     document.getElementById(divList).innerHTML += asteroid_img;
+    TOTAL_ASTEROID_CNT++;
   }
 
   /**
@@ -341,6 +345,7 @@ $(document).ready(function() {
             snd.play();
           }
           asteroid.remove();
+          TOTAL_ASTEROID_CNT--;
           bullet.remove();
           updateScore();
 
@@ -348,9 +353,14 @@ $(document).ready(function() {
             createLargeAsteroid(); //is being called too many times, causes game to lag
           }
           asteroid.remove();
+          TOTAL_ASTEROID_CNT--;
 
           // if the bullet hits a large asteroid, create three smaller ones in its place
-          if (xPos == LARGE_ASTEROID_SIZE && yPos == LARGE_ASTEROID_SIZE) {
+          if (
+            xPos == LARGE_ASTEROID_SIZE &&
+            yPos == LARGE_ASTEROID_SIZE &&
+            TOTAL_ASTEROID_CNT <= 7
+          ) {
             // grabs the x and y location of the large asteroid
             let asteroid_x = parseFloat(asteroid.style.left);
             let asteroid_y = parseFloat(asteroid.style.top);
@@ -380,6 +390,7 @@ $(document).ready(function() {
     createSmallAsteroid(x, y);
     createSmallAsteroid(x, y);
     createSmallAsteroid(x, y);
+    TOTAL_ASTEROID_CNT += 3;
   }
 
   function bulletCollide(asteroid, bullet) {
@@ -416,6 +427,7 @@ $(document).ready(function() {
         let asteroid_x = parseFloat(asteroid.style.left);
         let asteroid_y = parseFloat(asteroid.style.top);
         asteroid.remove();
+        TOTAL_ASTEROID_CNT--;
         // if (asteroid.SIZE = LARGE_ASTEROID_SIZE) {
         // 	splitInto3Asteroids(asteroid_x, asteroid_y);
         // }
