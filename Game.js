@@ -12,6 +12,7 @@ const direction = {
 let SMALL_ASTEROID_SIZE = 50;
 let LARGE_ASTEROID_SIZE = 100;
 let TOTAL_ASTEROID_CNT = 0;
+let ASTEROID_CNT_LIMIT = 7;
 
 /**
  * Enums for game settings
@@ -128,7 +129,7 @@ $(document).ready(function() {
 
   function createAsteroidList() {
     for (let i = 0; i < game.MAX_ASTEROID_CNT; i++) {
-      if (TOTAL_ASTEROID_CNT < 7) {
+      if (TOTAL_ASTEROID_CNT < ASTEROID_CNT_LIMIT) {
         createLargeAsteroid();
       }
     }
@@ -359,7 +360,7 @@ $(document).ready(function() {
           if (
             xPos == LARGE_ASTEROID_SIZE &&
             yPos == LARGE_ASTEROID_SIZE &&
-            TOTAL_ASTEROID_CNT <= 7
+            TOTAL_ASTEROID_CNT <= ASTEROID_CNT_LIMIT
           ) {
             // grabs the x and y location of the large asteroid
             let asteroid_x = parseFloat(asteroid.style.left);
